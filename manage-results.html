@@ -496,5 +496,40 @@
             }, 5000);
         }
     </script>
+    <script>
+    // Check login status
+    document.addEventListener('DOMContentLoaded', function() {
+        const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+        
+        if (!isLoggedIn) {
+            // Redirect to admin login
+            window.location.href = 'admin.html';
+            return;
+        }
+        
+        // User is logged in, proceed with page functionality
+        loadCurrentResults();
+        loadResultsHistory();
+        
+        // Add logout functionality
+        const logoutBtn = document.createElement('button');
+        logoutBtn.className = 'btn btn-danger';
+        logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
+        logoutBtn.style.position = 'fixed';
+        logoutBtn.style.top = '20px';
+        logoutBtn.style.right = '20px';
+        logoutBtn.style.zIndex = '1000';
+        logoutBtn.onclick = function() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('adminLoggedIn');
+                window.location.href = 'admin.html';
+            }
+        };
+        
+        document.body.appendChild(logoutBtn);
+    });
+    
+    // Rest of your manage-results functions remain the same...
+</script>
 </body>
 </html>
