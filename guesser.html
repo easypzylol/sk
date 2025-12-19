@@ -61,7 +61,7 @@
 
             <div class="admin-grid">
                 <!-- Submit Prediction -->
-                <div class="admin-card">
+                <div class="admin-card" id="predictionForm">
                     <h3><i class="fas fa-paper-plane"></i> Submit Prediction</h3>
                     <div class="form-group">
                         <label>Select Game</label>
@@ -74,17 +74,42 @@
                             <option value="6">DESHWAR DUBAI</option>
                         </select>
                     </div>
+                    
                     <div class="form-group">
-                        <label>Enter 3 Numbers (00-99)</label>
-                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                            <input type="number" id="num1" class="form-control" placeholder="First" min="0" max="99">
-                            <input type="number" id="num2" class="form-control" placeholder="Second" min="0" max="99">
-                            <input type="number" id="num3" class="form-control" placeholder="Third" min="0" max="99">
+                        <label>Prediction Type</label>
+                        <div class="prediction-type-selector">
+                            <button type="button" class="type-btn active" onclick="selectPredictionType('single')">Single (1 Number)</button>
+                            <button type="button" class="type-btn" onclick="selectPredictionType('spot')">Spot (2 Numbers)</button>
                         </div>
-                        <small style="color: #a0a0c0;">Enter numbers between 00-99 only</small>
+                        <input type="hidden" id="predictionType" value="single">
                     </div>
+                    
+                    <!-- Single Number Input -->
+                    <div id="singleInput" class="prediction-inputs active">
+                        <div class="form-group">
+                            <label>Enter Single Number (00-99)</label>
+                            <input type="number" id="singleNumber" class="form-control number-input" 
+                                   placeholder="00" min="0" max="99" step="1">
+                            <small style="color: #a0a0c0;">Enter one number between 00-99</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Spot Numbers Input -->
+                    <div id="spotInput" class="prediction-inputs">
+                        <div class="form-group">
+                            <label>Enter Spot Numbers (00-99 each)</label>
+                            <div class="spot-inputs">
+                                <input type="number" id="spotNumber1" class="form-control number-input" 
+                                       placeholder="First" min="0" max="99" step="1">
+                                <input type="number" id="spotNumber2" class="form-control number-input" 
+                                       placeholder="Second" min="0" max="99" step="1">
+                            </div>
+                            <small style="color: #a0a0c0;">Enter two numbers between 00-99</small>
+                        </div>
+                    </div>
+                    
                     <div class="form-group">
-                        <label>Confidence Level</label>
+                        <label>Confidence Level (Optional)</label>
                         <select id="confidence" class="form-control">
                             <option value="low">Low (30-50%)</option>
                             <option value="medium">Medium (50-70%)</option>
@@ -92,13 +117,12 @@
                             <option value="very-high">Very High (90-100%)</option>
                         </select>
                     </div>
+                    
                     <div class="form-group">
-                        <label>Notes (Optional)</label>
-                        <textarea id="predictionNotes" class="form-control" rows="2" placeholder="Any special notes..."></textarea>
+                        <button onclick="submitPrediction()" class="btn btn-primary" style="width: 100%;">
+                            <i class="fas fa-share-square"></i> Submit Prediction
+                        </button>
                     </div>
-                    <button onclick="submitPrediction()" class="btn btn-primary" style="width: 100%;">
-                        <i class="fas fa-share-square"></i> Submit Prediction
-                    </button>
                 </div>
 
                 <!-- My Recent Predictions -->
@@ -110,6 +134,7 @@
                                 <tr>
                                     <th>Time</th>
                                     <th>Game</th>
+                                    <th>Type</th>
                                     <th>Numbers</th>
                                     <th>Status</th>
                                 </tr>
@@ -205,9 +230,30 @@
             document.getElementById('currentGuesserName').textContent = guesser.name;
             document.getElementById('currentGuesserId').textContent = guesser.id;
             
+            // Initialize prediction form
+            selectPredictionType('single');
+            
+            // Load data
             loadMyPredictions();
             loadPerformanceStats();
             loadGameSchedule();
+        }
+
+        function selectPredictionType(type) {
+            // Update buttons
+            document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+            if (type === 'single') {
+                document.querySelectorAll('.type-btn')[0].classList.add('active');
+            } else if (type === 'spot') {
+                document.querySelectorAll('.type-btn')[1].classList.add('active');
+            }
+            
+            // Update hidden input
+            document.getElementById('predictionType').value = type;
+            
+            // Show/hide inputs
+            document.getElementById('singleInput').style.display = type === 'single' ? 'block' : 'none';
+            document.getElementById('spotInput').style.display = type === 'spot' ? 'block' : 'none';
         }
 
         function submitPrediction() {
@@ -218,32 +264,60 @@
             }
             
             const gameId = parseInt(document.getElementById('predictionGame').value);
-            const num1 = parseInt(document.getElementById('num1').value);
-            const num2 = parseInt(document.getElementById('num2').value);
-            const num3 = parseInt(document.getElementById('num3').value);
+            const type = document.getElementById('predictionType').value;
             const confidence = document.getElementById('confidence').value;
-            const notes = document.getElementById('predictionNotes').value.trim();
             
-            // Validate numbers
-            if (isNaN(num1) || isNaN(num2) || isNaN(num3) || 
-                num1 < 0 || num1 > 99 || 
-                num2 < 0 || num2 > 99 || 
-                num3 < 0 || num3 > 99) {
-                showNotification('Please enter valid numbers between 00-99!', 'error');
+            let numbers = [];
+            
+            if (type === 'single') {
+                const singleNum = parseInt(document.getElementById('singleNumber').value);
+                if (isNaN(singleNum) || singleNum < 0 || singleNum > 99) {
+                    showNotification('Please enter a valid single number (00-99)!', 'error');
+                    return;
+                }
+                numbers = [singleNum];
+            } else if (type === 'spot') {
+                const spot1 = parseInt(document.getElementById('spotNumber1').value);
+                const spot2 = parseInt(document.getElementById('spotNumber2').value);
+                
+                if (isNaN(spot1) || isNaN(spot2) || 
+                    spot1 < 0 || spot1 > 99 || 
+                    spot2 < 0 || spot2 > 99) {
+                    showNotification('Please enter valid spot numbers (00-99)!', 'error');
+                    return;
+                }
+                
+                if (spot1 === spot2) {
+                    showNotification('Spot numbers must be different!', 'error');
+                    return;
+                }
+                
+                numbers = [spot1, spot2];
+            }
+            
+            // Check if already predicted for this game today
+            const today = new Date().toDateString();
+            const predictions = JSON.parse(localStorage.getItem('matkaPredictions') || '[]');
+            const existingPrediction = predictions.find(p => 
+                p.guesserId === currentGuesser.id && 
+                p.gameId === gameId &&
+                new Date(p.timestamp).toDateString() === today
+            );
+            
+            if (existingPrediction) {
+                showNotification('You already submitted a prediction for this game today!', 'error');
                 return;
             }
             
             // Save prediction
-            let predictions = JSON.parse(localStorage.getItem('matkaPredictions') || '[]');
-            
             predictions.push({
                 id: Date.now(),
                 guesserId: currentGuesser.id,
                 guesserName: currentGuesser.name,
                 gameId: gameId,
-                numbers: [num1, num2, num3],
+                type: type,
+                numbers: numbers,
                 confidence: confidence,
-                notes: notes,
                 timestamp: new Date().toISOString(),
                 status: 'pending'
             });
@@ -251,12 +325,13 @@
             localStorage.setItem('matkaPredictions', JSON.stringify(predictions));
             
             // Clear form
-            document.getElementById('num1').value = '';
-            document.getElementById('num2').value = '';
-            document.getElementById('num3').value = '';
-            document.getElementById('predictionNotes').value = '';
+            document.getElementById('singleNumber').value = '';
+            document.getElementById('spotNumber1').value = '';
+            document.getElementById('spotNumber2').value = '';
             
             showNotification('Prediction submitted successfully!', 'success');
+            
+            // Reload data
             loadMyPredictions();
             loadPerformanceStats();
         }
@@ -276,18 +351,33 @@
             const tbody = document.getElementById('myPredictions');
             tbody.innerHTML = '';
             
+            if (myPredictions.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #a0a0c0;">
+                            No predictions submitted yet.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
             myPredictions.forEach(prediction => {
                 const game = games.find(g => g.id === prediction.gameId);
+                const date = new Date(prediction.timestamp);
+                const typeBadge = prediction.type === 'single' ? 
+                    '<span class="badge badge-single">Single</span>' : 
+                    '<span class="badge badge-spot">Spot</span>';
+                
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${formatTime(new Date(prediction.timestamp).toLocaleTimeString())}</td>
+                    <td>${date.toLocaleDateString()} ${date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
                     <td>${game ? game.name : 'Game'}</td>
-                    <td>
-                        ${prediction.numbers.map(n => n.toString().padStart(2, '0')).join('-')}
-                    </td>
+                    <td>${typeBadge}</td>
+                    <td>${prediction.numbers.map(n => n.toString().padStart(2, '0')).join(', ')}</td>
                     <td>
                         <span class="${prediction.status === 'correct' ? 'active-status' : 
-                                     prediction.status === 'wrong' ? 'inactive-status' : ''}">
+                                     prediction.status === 'wrong' ? 'inactive-status' : 'pending-status'}">
                             ${prediction.status}
                         </span>
                     </td>
@@ -300,183 +390,4 @@
             const currentGuesser = JSON.parse(localStorage.getItem('currentGuesser'));
             if (!currentGuesser) return;
             
-            const predictions = JSON.parse(localStorage.getItem('matkaPredictions') || '[]');
-            const myPredictions = predictions.filter(p => p.guesserId === currentGuesser.id);
-            
-            const total = myPredictions.length;
-            const correct = myPredictions.filter(p => p.status === 'correct').length;
-            const pending = myPredictions.filter(p => p.status === 'pending').length;
-            const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
-            
-            const statsHtml = `
-                <div class="stats">
-                    <div class="stat-item">
-                        <span class="stat-label">Total Predictions:</span>
-                        <span class="stat-value">${total}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Correct Predictions:</span>
-                        <span class="stat-value">${correct}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Pending Results:</span>
-                        <span class="stat-value">${pending}</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Accuracy Rate:</span>
-                        <span class="stat-value">${accuracy}%</span>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('performanceStats').innerHTML = statsHtml;
-        }
-
-        function loadGameSchedule() {
-            const games = JSON.parse(localStorage.getItem('matkaGames')) || [];
-            const container = document.getElementById('gameSchedule');
-            
-            container.innerHTML = '';
-            
-            games.forEach(game => {
-                const gameCard = document.createElement('div');
-                gameCard.className = 'game-card';
-                gameCard.innerHTML = `
-                    <div class="game-header">
-                        <h3>${game.name}</h3>
-                        <span class="game-time">${formatTime(game.time)}</span>
-                    </div>
-                    <div style="text-align: center; padding: 15px 0;">
-                        <div style="color: #a0a0c0; font-size: 0.9rem;">
-                            Next result at ${formatTime(game.time)}
-                        </div>
-                        <button onclick="setPredictionGame(${game.id})" class="btn btn-small" style="margin-top: 10px;">
-                            <i class="fas fa-bullhorn"></i> Predict Now
-                        </button>
-                    </div>
-                `;
-                container.appendChild(gameCard);
-            });
-        }
-
-        function setPredictionGame(gameId) {
-            document.getElementById('predictionGame').value = gameId;
-            document.getElementById('predictionGame').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function viewAllMyPredictions() {
-            const currentGuesser = JSON.parse(localStorage.getItem('currentGuesser'));
-            if (!currentGuesser) return;
-            
-            const predictions = JSON.parse(localStorage.getItem('matkaPredictions') || '[]');
-            const myPredictions = predictions.filter(p => p.guesserId === currentGuesser.id);
-            const games = JSON.parse(localStorage.getItem('matkaGames') || []);
-            
-            let html = '<div style="max-height: 400px; overflow-y: auto;">';
-            html += '<table style="width: 100%; border-collapse: collapse;">';
-            html += '<thead><tr><th>Date</th><th>Game</th><th>Numbers</th><th>Status</th></tr></thead>';
-            html += '<tbody>';
-            
-            myPredictions.forEach(prediction => {
-                const game = games.find(g => g.id === prediction.gameId);
-                html += `
-                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <td style="padding: 8px;">${new Date(prediction.timestamp).toLocaleDateString()}</td>
-                        <td style="padding: 8px;">${game ? game.name : 'Game'}</td>
-                        <td style="padding: 8px; color: #2196f3;">${prediction.numbers.map(n => n.toString().padStart(2, '0')).join('-')}</td>
-                        <td style="padding: 8px;">
-                            <span class="${prediction.status === 'correct' ? 'active-status' : 
-                                         prediction.status === 'wrong' ? 'inactive-status' : ''}">
-                                ${prediction.status}
-                            </span>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            html += '</tbody></table></div>';
-            
-            const modal = document.createElement('div');
-            modal.className = 'modal';
-            modal.innerHTML = `
-                <div style="background: #1a1a2e; padding: 30px; border-radius: 10px; max-width: 600px; width: 90%;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                        <h3 style="color: #ff4081;">All My Predictions</h3>
-                        <button onclick="this.closest('.modal').remove()" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">×</button>
-                    </div>
-                    ${myPredictions.length > 0 ? html : '<p style="text-align: center;">No predictions found.</p>'}
-                    <div style="text-align: center; margin-top: 20px;">
-                        <button onclick="this.closest('.modal').remove()" style="background: #f50057; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Close</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-        }
-
-        function exportMyData() {
-            const currentGuesser = JSON.parse(localStorage.getItem('currentGuesser'));
-            if (!currentGuesser) return;
-            
-            const predictions = JSON.parse(localStorage.getItem('matkaPredictions') || '[]');
-            const myPredictions = predictions.filter(p => p.guesserId === currentGuesser.id);
-            const games = JSON.parse(localStorage.getItem('matkaGames') || []);
-            
-            let csvContent = "Date,Time,Game,Numbers,Status,Confidence,Notes\n";
-            
-            myPredictions.forEach(prediction => {
-                const game = games.find(g => g.id === prediction.gameId);
-                const date = new Date(prediction.timestamp);
-                csvContent += `${date.toLocaleDateString()},${date.toLocaleTimeString()},${game ? game.name : 'Game'},"${prediction.numbers.join('-')}",${prediction.status},${prediction.confidence},"${prediction.notes}"\n`;
-            });
-            
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `guesser-${currentGuesser.id}-data.csv`;
-            a.click();
-            
-            showNotification('Data exported successfully!', 'success');
-        }
-
-        function logoutGuesser() {
-            localStorage.removeItem('currentGuesser');
-            location.reload();
-        }
-
-        // Helper functions
-        function formatTime(timeStr) {
-            if (!timeStr) return '';
-            const [hours, minutes] = timeStr.split(':');
-            const hour = parseInt(hours);
-            const ampm = hour >= 12 ? 'PM' : 'AM';
-            const hour12 = hour % 12 || 12;
-            return `${hour12}:${minutes.padStart(2, '0')} ${ampm}`;
-        }
-
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.textContent = message;
-            notification.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                background: ${type === 'success' ? '#00c853' : type === 'error' ? '#ff1744' : '#2196f3'};
-                color: white;
-                padding: 15px 25px;
-                border-radius: 5px;
-                z-index: 1000;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                animation: slideIn 0.3s ease;
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-    </script>
-</body>
-</html>
+            const predictions =
