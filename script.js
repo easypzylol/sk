@@ -1,4 +1,4 @@
-// Main JavaScript File
+// Main JavaScript File - Admin Controlled Results
 document.addEventListener('DOMContentLoaded', function() {
     initializeStorage();
     loadGames();
@@ -7,13 +7,15 @@ document.addEventListener('DOMContentLoaded', function() {
     loadAds();
     updateLiveTimers();
     
+    // Check for new results every 30 seconds
+    setInterval(checkForNewResults, 30000);
     setInterval(updateLiveTimers, 30000);
     setInterval(loadPredictions, 60000);
 });
 
 // Initialize localStorage with 6 specific games
 function initializeStorage() {
-    // 6 Specific Games with single results
+    // 6 Specific Games with admin-controlled results
     if (!localStorage.getItem('matkaGames')) {
         const games = [
             { 
@@ -21,8 +23,9 @@ function initializeStorage() {
                 name: 'FARIDABAD', 
                 time: '17:15', 
                 yesterday: 70, 
-                today: 34, 
-                results: [] 
+                today: null, 
+                results: [],
+                isPublished: false
             },
             { 
                 id: 2, 
@@ -30,39 +33,44 @@ function initializeStorage() {
                 time: '21:15', 
                 yesterday: 70, 
                 today: null, 
-                results: [] 
+                results: [],
+                isPublished: false
             },
             { 
                 id: 3, 
                 name: 'GALI', 
                 time: '22:30', 
                 yesterday: 20, 
-                today: 18, 
-                results: [] 
+                today: null, 
+                results: [],
+                isPublished: false
             },
             { 
                 id: 4, 
                 name: 'DESHWAR', 
                 time: '16:45', 
                 yesterday: 25, 
-                today: 22, 
-                results: [] 
+                today: null, 
+                results: [],
+                isPublished: false
             },
             { 
                 id: 5, 
                 name: 'GALI DUBAI', 
                 time: '14:30', 
                 yesterday: 30, 
-                today: 28, 
-                results: [] 
+                today: null, 
+                results: [],
+                isPublished: false
             },
             { 
                 id: 6, 
                 name: 'DESHWAR DUBAI', 
                 time: '23:45', 
                 yesterday: 35, 
-                today: 32, 
-                results: [] 
+                today: null, 
+                results: [],
+                isPublished: false
             }
         ];
         localStorage.setItem('matkaGames', JSON.stringify(games));
@@ -135,61 +143,174 @@ function initializeStorage() {
     }
 }
 
-// Load games
+// Load games with admin-controlled results
 function loadGames() {
     const games = JSON.parse(localStorage.getItem('matkaGames')) || [];
     
     games.forEach(game => {
         const resultElement = document.getElementById(`result-${game.id}`);
+        const statusElement = document.getElementById(`status-${game.id}`);
         const yesterdayElement = document.getElementById(`yesterday-${game.id}`);
         const todayElement = document.getElementById(`today-${game.id}`);
         const timeElement = document.getElementById(`time-${game.id}`);
         
-        if (!resultElement || !yesterdayElement || !todayElement || !timeElement) return;
+        if (!resultElement || !statusElement) return;
         
         // Update game time
-        timeElement.textContent = formatTime(game.time);
+        if (timeElement) {
+            timeElement.textContent = formatTime(game.time);
+        }
         
         // Update yesterday
-        if (game.yesterday !== null && game.yesterday !== undefined) {
+        if (yesterdayElement && game.yesterday !== null) {
             yesterdayElement.textContent = game.yesterday.toString().padStart(2, '0');
         }
         
-        // Update today and result
-        const today = new Date().toDateString();
-        const todayResult = game.results.find(r => new Date(r.date).toDateString() === today);
+        // Update today (only if result is published)
+        if (todayElement) {
+            if (game.isPublished && game.today !== null) {
+                todayElement.textContent = game.today.toString().padStart(2, '0');
+                todayElement.style.color = '#00e676';
+            } else {
+                todayElement.textContent = '--';
+                todayElement.style.color = '#a0a0c0';
+            }
+        }
         
-        if (todayResult && todayResult.number !== undefined) {
-            // Result exists
-            todayElement.textContent = todayResult.number.toString().padStart(2, '0');
-            todayElement.style.color = '#00e676';
-            
-            resultElement.textContent = todayResult.number.toString().padStart(2, '0');
+        // Update result display based on published status
+        if (game.isPublished && game.today !== null) {
+            // Result is published - show it
+            resultElement.textContent = game.today.toString().padStart(2, '0');
             resultElement.className = 'single-result present';
-        } else {
-            // Check if game time has passed
+            
+            // Update status
+            statusElement.textContent = 'Result Published ✓';
+            statusElement.className = 'result-status published';
+            
+            // Check game time
             const now = new Date();
             const [hours, minutes] = game.time.split(':');
             const gameTime = new Date();
             gameTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
             
-            if (now > gameTime) {
-                // Game time passed, no result
-                todayElement.textContent = '--';
-                todayElement.style.color = '#ff4081';
-                
-                resultElement.textContent = '--';
-                resultElement.className = 'single-result absent';
+            if (now < gameTime) {
+                statusElement.textContent = 'Early Result Published ✓';
+            }
+        } else {
+            // Result not published
+            const now = new Date();
+            const [hours, minutes] = game.time.split(':');
+            const gameTime = new Date();
+            gameTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+            
+            resultElement.textContent = '--';
+            resultElement.className = 'single-result absent';
+            
+            if (now < gameTime) {
+                // Game hasn't started yet
+                statusElement.textContent = `Game starts at ${formatTime(game.time)}`;
+                statusElement.className = 'result-status waiting';
             } else {
-                // Game hasn't happened yet
-                todayElement.textContent = 'UPCOMING';
-                todayElement.style.color = '#ff9800';
-                
-                resultElement.textContent = 'UPCOMING';
-                resultElement.className = 'single-result upcoming';
+                // Game time passed, waiting for result
+                const minutesPassed = Math.floor((now - gameTime) / (1000 * 60));
+                if (minutesPassed < 5) {
+                    statusElement.textContent = 'Result coming soon...';
+                } else {
+                    statusElement.textContent = 'Waiting for result';
+                }
+                statusElement.className = 'result-status waiting';
             }
         }
     });
+}
+
+// Check for new results from admin
+function checkResult(gameId) {
+    const resultElement = document.getElementById(`result-${gameId}`);
+    const statusElement = document.getElementById(`status-${gameId}`);
+    
+    if (!resultElement || !statusElement) return;
+    
+    // Show loading
+    resultElement.textContent = '...';
+    resultElement.className = 'single-result checking';
+    statusElement.textContent = 'Checking for updates...';
+    
+    setTimeout(() => {
+        const games = JSON.parse(localStorage.getItem('matkaGames')) || [];
+        const game = games.find(g => g.id === gameId);
+        
+        if (game && game.isPublished && game.today !== null) {
+            // New result available
+            resultElement.textContent = game.today.toString().padStart(2, '0');
+            resultElement.className = 'single-result present';
+            statusElement.textContent = 'New Result Published! ✓';
+            statusElement.className = 'result-status published';
+            
+            // Update today display
+            const todayElement = document.getElementById(`today-${gameId}`);
+            if (todayElement) {
+                todayElement.textContent = game.today.toString().padStart(2, '0');
+                todayElement.style.color = '#00e676';
+            }
+            
+            showNotification(`New ${getGameName(gameId)} result: ${game.today.toString().padStart(2, '0')}!`, 'success');
+        } else {
+            // No new result
+            resultElement.textContent = '--';
+            resultElement.className = 'single-result absent';
+            
+            const now = new Date();
+            const [hours, minutes] = game.time.split(':');
+            const gameTime = new Date();
+            gameTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+            
+            if (now < gameTime) {
+                statusElement.textContent = `Game starts at ${formatTime(game.time)}`;
+            } else {
+                statusElement.textContent = 'No result yet. Check back soon.';
+            }
+            statusElement.className = 'result-status waiting';
+            
+            showNotification('No new result available yet.', 'info');
+        }
+    }, 1000);
+}
+
+// Check all games for new results
+function checkForNewResults() {
+    const games = JSON.parse(localStorage.getItem('matkaGames')) || [];
+    let hasNewResults = false;
+    
+    games.forEach(game => {
+        if (game.isPublished && game.today !== null) {
+            const todayElement = document.getElementById(`today-${game.id}`);
+            const resultElement = document.getElementById(`result-${game.id}`);
+            const statusElement = document.getElementById(`status-${game.id}`);
+            
+            if (todayElement && todayElement.textContent === '--') {
+                hasNewResults = true;
+                
+                // Update display
+                todayElement.textContent = game.today.toString().padStart(2, '0');
+                todayElement.style.color = '#00e676';
+                
+                if (resultElement) {
+                    resultElement.textContent = game.today.toString().padStart(2, '0');
+                    resultElement.className = 'single-result present';
+                }
+                
+                if (statusElement) {
+                    statusElement.textContent = 'Result Published ✓';
+                    statusElement.className = 'result-status published';
+                }
+            }
+        }
+    });
+    
+    if (hasNewResults) {
+        console.log('New results detected and updated');
+    }
 }
 
 // Load predictions
@@ -315,7 +436,16 @@ function updateLiveTimers() {
         gameTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
         
         const timeElement = document.getElementById(`time-${game.id}`);
-        if (!timeElement) return;
+        const statusElement = document.getElementById(`status-${game.id}`);
+        
+        if (!timeElement || !statusElement) return;
+        
+        if (game.isPublished && game.today !== null) {
+            // Result already published
+            timeElement.textContent = `${formatTime(game.time)} (Result Published)`;
+            timeElement.style.color = '#00e676';
+            return;
+        }
         
         if (now < gameTime) {
             const diff = gameTime - now;
@@ -325,12 +455,15 @@ function updateLiveTimers() {
             if (hoursLeft > 0) {
                 timeElement.textContent = `${formatTime(game.time)} (in ${hoursLeft}h ${minutesLeft}m)`;
                 timeElement.style.color = '#ffd600';
+                statusElement.textContent = `Starts in ${hoursLeft}h ${minutesLeft}m`;
             } else if (minutesLeft > 0) {
                 timeElement.textContent = `${formatTime(game.time)} (in ${minutesLeft}m)`;
                 timeElement.style.color = '#ff9100';
+                statusElement.textContent = `Starts in ${minutesLeft}m`;
             } else {
                 timeElement.textContent = `${formatTime(game.time)} (Starting now)`;
                 timeElement.style.color = '#00e676';
+                statusElement.textContent = 'Starting now';
             }
         } else {
             const diff = now - gameTime;
@@ -339,76 +472,14 @@ function updateLiveTimers() {
             if (minutesPassed < 5) {
                 timeElement.textContent = `${formatTime(game.time)} (Result coming...)`;
                 timeElement.style.color = '#ff4081';
+                statusElement.textContent = 'Result coming soon...';
             } else {
-                timeElement.textContent = `${formatTime(game.time)} (Result declared)`;
-                timeElement.style.color = '#00e676';
+                timeElement.textContent = `${formatTime(game.time)} (Waiting for result)`;
+                timeElement.style.color = '#a0a0c0';
+                statusElement.textContent = 'Waiting for result';
             }
         }
     });
-}
-
-// Refresh result for a specific game
-function refreshResult(gameId) {
-    const resultElement = document.getElementById(`result-${gameId}`);
-    const todayElement = document.getElementById(`today-${gameId}`);
-    
-    if (!resultElement || !todayElement) return;
-    
-    // Show loading
-    resultElement.textContent = '??';
-    resultElement.className = 'single-result';
-    resultElement.style.background = 'linear-gradient(45deg, #ff9800, #ff5722)';
-    
-    setTimeout(() => {
-        const randomNumber = Math.floor(Math.random() * 100);
-        
-        // Update display
-        resultElement.textContent = randomNumber.toString().padStart(2, '0');
-        resultElement.className = 'single-result present';
-        resultElement.style.background = '';
-        
-        // Update today element
-        todayElement.textContent = randomNumber.toString().padStart(2, '0');
-        todayElement.style.color = '#00e676';
-        
-        // Save to localStorage
-        const games = JSON.parse(localStorage.getItem('matkaGames')) || [];
-        const gameIndex = games.findIndex(g => g.id === gameId);
-        
-        if (gameIndex !== -1) {
-            // Set yesterday to previous today
-            if (games[gameIndex].today !== undefined && games[gameIndex].today !== null) {
-                games[gameIndex].yesterday = games[gameIndex].today;
-                document.getElementById(`yesterday-${gameId}`).textContent = 
-                    games[gameIndex].yesterday.toString().padStart(2, '0');
-            }
-            
-            // Set new today number
-            games[gameIndex].today = randomNumber;
-            
-            // Add to results array
-            const today = new Date().toISOString();
-            const existingResultIndex = games[gameIndex].results.findIndex(
-                r => new Date(r.date).toDateString() === new Date(today).toDateString()
-            );
-            
-            if (existingResultIndex !== -1) {
-                games[gameIndex].results[existingResultIndex] = {
-                    date: today,
-                    number: randomNumber
-                };
-            } else {
-                games[gameIndex].results.push({
-                    date: today,
-                    number: randomNumber
-                });
-            }
-            
-            localStorage.setItem('matkaGames', JSON.stringify(games));
-            
-            showNotification(`${getGameName(gameId)} result updated: ${randomNumber.toString().padStart(2, '0')}!`, 'success');
-        }
-    }, 1000);
 }
 
 // Show predictions modal
