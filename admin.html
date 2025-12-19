@@ -6,264 +6,673 @@
     <title>Admin Panel - Matka King</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(26, 26, 46, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 20px;
+        }
+        
+        .login-box {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.5s ease;
+        }
+        
+        .login-box h2 {
+            color: #ff4081;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+        }
+        
+        .login-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .login-logo h3 {
+            color: #ff4081;
+            font-size: 1.2rem;
+        }
+    </style>
 </head>
 <body>
-    <div class="admin-panel">
-        <div class="container">
-            <!-- Admin Header -->
-            <div class="admin-header">
-                <h1><i class="fas fa-lock"></i> MATKA KING ADMIN PANEL</h1>
-                <p>Control results, manage guessers, and monitor activities</p>
-                <button id="logout-btn" class="btn btn-danger">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
+    <!-- Login Overlay (shown when not logged in) -->
+    <div id="loginOverlay" class="login-overlay">
+        <div class="login-box">
+            <div class="login-logo">
+                <h3><i class="fas fa-lock"></i> ADMIN LOGIN</h3>
+                <p style="color: #a0a0c0; font-size: 0.9rem; margin-top: 5px;">Matka King Control Panel</p>
             </div>
-
-            <!-- Results Management -->
-            <div class="admin-card">
-                <h3><i class="fas fa-flag-checkered"></i> MANAGE TODAY'S RESULTS</h3>
-                
-                <div class="today-date">
-                    <i class="fas fa-calendar"></i> Today: <span id="current-date"></span>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" class="form-control" placeholder="Enter admin username" required autofocus>
                 </div>
                 
-                <div class="results-form-grid">
-                    <!-- Faridabad -->
-                    <div class="result-set-card">
-                        <h4>FARIDABAD (5:15 PM)</h4>
-                        <div class="form-group">
-                            <label>Result Number (00-99):</label>
-                            <input type="text" id="result-faridabad" class="form-control" maxlength="2" 
-                                   placeholder="Enter result">
-                        </div>
-                        <div id="status-faridabad" class="status-badge unpublished">Not Set</div>
-                    </div>
-                    
-                    <!-- Gaziabad -->
-                    <div class="result-set-card">
-                        <h4>GAZIABAD (9:15 PM)</h4>
-                        <div class="form-group">
-                            <label>Result Number (00-99):</label>
-                            <input type="text" id="result-gaziabad" class="form-control" maxlength="2" 
-                                   placeholder="Enter result">
-                        </div>
-                        <div id="status-gaziabad" class="status-badge unpublished">Not Set</div>
-                    </div>
-                    
-                    <!-- Gali -->
-                    <div class="result-set-card">
-                        <h4>GALI (10:30 PM)</h4>
-                        <div class="form-group">
-                            <label>Result Number (00-99):</label>
-                            <input type="text" id="result-gali" class="form-control" maxlength="2" 
-                                   placeholder="Enter result">
-                        </div>
-                        <div id="status-gali" class="status-badge unpublished">Not Set</div>
-                    </div>
-                    
-                    <!-- Deshwar -->
-                    <div class="result-set-card">
-                        <h4>DESHWAR (4:45 PM)</h4>
-                        <div class="form-group">
-                            <label>Result Number (00-99):</label>
-                            <input type="text" id="result-deshwar" class="form-control" maxlength="2" 
-                                   placeholder="Enter result">
-                        </div>
-                        <div id="status-deshwar" class="status-badge unpublished">Not Set</div>
-                    </div>
-                    
-                    <!-- Gali Dubai -->
-                    <div class="result-set-card">
-                        <h4>GALI DUBAI (2:30 PM)</h4>
-                        <div class="form-group">
-                            <label>Result Number (00-99):</label>
-                            <input type="text" id="result-gali-dubai" class="form-control" maxlength="2" 
-                                   placeholder="Enter result">
-                        </div>
-                        <div id="status-gali_dubai" class="status-badge unpublished">Not Set</div>
-                    </div>
-                    
-                    <!-- Deshwar Dubai -->
-                    <div class="result-set-card">
-                        <h4>DESHWAR DUBAI (11:45 PM)</h4>
-                        <div class="form-group">
-                            <label>Result Number (00-99):</label>
-                            <input type="text" id="result-deshwar-dubai" class="form-control" maxlength="2" 
-                                   placeholder="Enter result">
-                        </div>
-                        <div id="status-deshwar_dubai" class="status-badge unpublished">Not Set</div>
-                    </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" class="form-control" placeholder="Enter password" required>
                 </div>
                 
-                <div class="form-actions" style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-                    <button id="save-results" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Save Results
-                    </button>
-                    <button id="publish-results" class="btn btn-success">
-                        <i class="fas fa-broadcast-tower"></i> Publish Results
-                    </button>
-                    <button id="clear-results" class="btn btn-danger">
-                        <i class="fas fa-trash"></i> Clear All
+                <div style="margin-top: 25px;">
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-sign-in-alt"></i> Login
                     </button>
                 </div>
+                
+                <div style="margin-top: 15px; text-align: center;">
+                    <a href="index.html" style="color: #a0a0c0; text-decoration: none; font-size: 0.9rem;">
+                        <i class="fas fa-arrow-left"></i> Back to Home
+                    </a>
+                </div>
+            </form>
+            
+            <!-- Default Credentials -->
+            <div style="margin-top: 20px; padding: 15px; background: rgba(255, 64, 129, 0.1); border-radius: 5px; font-size: 0.85rem;">
+                <p style="color: #ff4081; margin-bottom: 5px;"><i class="fas fa-key"></i> Default Credentials:</p>
+                <p style="color: #a0a0c0; margin: 0;">Username: <strong>admin</strong></p>
+                <p style="color: #a0a0c0; margin: 0;">Password: <strong>matka123</strong></p>
             </div>
+        </div>
+    </div>
 
-            <!-- Guesser Management -->
-            <div class="admin-card">
-                <h3><i class="fas fa-users"></i> MANAGE GUESSERS</h3>
-                
-                <!-- Add New Guesser -->
-                <div class="form-group" style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <div style="flex: 1;">
-                        <label>New Guesser ID:</label>
-                        <input type="text" id="new-guesser-id" class="form-control" placeholder="G001">
+    <!-- Admin Panel Content (hidden until login) -->
+    <div id="adminContent" style="display: none;">
+        <div class="admin-panel">
+            <div class="container">
+                <!-- Admin Header -->
+                <div class="admin-header">
+                    <h1><i class="fas fa-lock"></i> MATKA KING ADMIN PANEL</h1>
+                    <p>Control results, manage guessers, and monitor activities</p>
+                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                        <button id="logout-btn" class="btn btn-danger">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                        <a href="index.html" class="btn btn-outline">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                        <a href="manage-results.html" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Manage Results
+                        </a>
                     </div>
-                    <div style="flex: 2;">
-                        <label>Guesser Name:</label>
-                        <input type="text" id="new-guesser-name" class="form-control" placeholder="Enter name">
+                </div>
+
+                <!-- Results Management -->
+                <div class="admin-card">
+                    <h3><i class="fas fa-flag-checkered"></i> MANAGE TODAY'S RESULTS</h3>
+                    
+                    <div class="today-date">
+                        <i class="fas fa-calendar"></i> Today: <span id="current-date"></span>
                     </div>
-                    <div style="align-self: flex-end;">
-                        <button id="add-guesser" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Add
+                    
+                    <div class="results-form-grid">
+                        <!-- Faridabad -->
+                        <div class="result-set-card">
+                            <h4>FARIDABAD (5:15 PM)</h4>
+                            <div class="form-group">
+                                <label>Result Number (00-99):</label>
+                                <input type="text" id="result-faridabad" class="form-control" maxlength="2" 
+                                       placeholder="Enter result">
+                            </div>
+                            <div id="status-faridabad" class="status-badge unpublished">Not Set</div>
+                        </div>
+                        
+                        <!-- Gaziabad -->
+                        <div class="result-set-card">
+                            <h4>GAZIABAD (9:15 PM)</h4>
+                            <div class="form-group">
+                                <label>Result Number (00-99):</label>
+                                <input type="text" id="result-gaziabad" class="form-control" maxlength="2" 
+                                       placeholder="Enter result">
+                            </div>
+                            <div id="status-gaziabad" class="status-badge unpublished">Not Set</div>
+                        </div>
+                        
+                        <!-- Gali -->
+                        <div class="result-set-card">
+                            <h4>GALI (10:30 PM)</h4>
+                            <div class="form-group">
+                                <label>Result Number (00-99):</label>
+                                <input type="text" id="result-gali" class="form-control" maxlength="2" 
+                                       placeholder="Enter result">
+                            </div>
+                            <div id="status-gali" class="status-badge unpublished">Not Set</div>
+                        </div>
+                        
+                        <!-- Deshwar -->
+                        <div class="result-set-card">
+                            <h4>DESHWAR (4:45 PM)</h4>
+                            <div class="form-group">
+                                <label>Result Number (00-99):</label>
+                                <input type="text" id="result-deshwar" class="form-control" maxlength="2" 
+                                       placeholder="Enter result">
+                            </div>
+                            <div id="status-deshwar" class="status-badge unpublished">Not Set</div>
+                        </div>
+                        
+                        <!-- Gali Dubai -->
+                        <div class="result-set-card">
+                            <h4>GALI DUBAI (2:30 PM)</h4>
+                            <div class="form-group">
+                                <label>Result Number (00-99):</label>
+                                <input type="text" id="result-gali-dubai" class="form-control" maxlength="2" 
+                                       placeholder="Enter result">
+                            </div>
+                            <div id="status-gali_dubai" class="status-badge unpublished">Not Set</div>
+                        </div>
+                        
+                        <!-- Deshwar Dubai -->
+                        <div class="result-set-card">
+                            <h4>DESHWAR DUBAI (11:45 PM)</h4>
+                            <div class="form-group">
+                                <label>Result Number (00-99):</label>
+                                <input type="text" id="result-deshwar-dubai" class="form-control" maxlength="2" 
+                                       placeholder="Enter result">
+                            </div>
+                            <div id="status-deshwar_dubai" class="status-badge unpublished">Not Set</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions" style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button id="save-results" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Results
+                        </button>
+                        <button id="publish-results" class="btn btn-success">
+                            <i class="fas fa-broadcast-tower"></i> Publish Results
+                        </button>
+                        <button id="clear-results" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Clear All
                         </button>
                     </div>
                 </div>
-                
-                <!-- Guesser List -->
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Guesser ID</th>
-                                <th>Name</th>
-                                <th>Rating</th>
-                                <th>Status</th>
-                                <th>Predictions</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="guesser-list">
-                            <!-- Guesser rows will be loaded here -->
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div style="margin-top: 20px;">
-                    <button id="save-guessers" class="btn btn-success">
-                        <i class="fas fa-save"></i> Save Changes
-                    </button>
-                </div>
-            </div>
 
-            <!-- System Stats -->
-            <div class="admin-card">
-                <h3><i class="fas fa-chart-line"></i> SYSTEM STATISTICS</h3>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                    <div class="stat-card">
-                        <h4><i class="fas fa-eye"></i> Total Visitors</h4>
-                        <div class="stat-number">1,248</div>
-                        <div class="stat-change positive">+12% today</div>
+                <!-- Guesser Management -->
+                <div class="admin-card">
+                    <h3><i class="fas fa-users"></i> MANAGE GUESSERS</h3>
+                    
+                    <!-- Add New Guesser -->
+                    <div class="form-group" style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 150px;">
+                            <label>New Guesser ID:</label>
+                            <input type="text" id="new-guesser-id" class="form-control" placeholder="G001">
+                        </div>
+                        <div style="flex: 2; min-width: 200px;">
+                            <label>Guesser Name:</label>
+                            <input type="text" id="new-guesser-name" class="form-control" placeholder="Enter name">
+                        </div>
+                        <div style="align-self: flex-end; min-width: 100px;">
+                            <button id="add-guesser" class="btn btn-primary" style="width: 100%;">
+                                <i class="fas fa-plus"></i> Add
+                            </button>
+                        </div>
                     </div>
                     
-                    <div class="stat-card">
-                        <h4><i class="fas fa-users"></i> Active Guessers</h4>
-                        <div class="stat-number">24</div>
-                        <div class="stat-change positive">+3 today</div>
+                    <!-- Guesser List -->
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Guesser ID</th>
+                                    <th>Name</th>
+                                    <th>Rating</th>
+                                    <th>Status</th>
+                                    <th>Predictions</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="guesser-list">
+                                <!-- Guesser rows will be loaded here -->
+                            </tbody>
+                        </table>
                     </div>
                     
-                    <div class="stat-card">
-                        <h4><i class="fas fa-flag"></i> Results Today</h4>
-                        <div class="stat-number">2/6</div>
-                        <div class="stat-change">4 pending</div>
-                    </div>
-                    
-                    <div class="stat-card">
-                        <h4><i class="fas fa-bell"></i> Notifications</h4>
-                        <div class="stat-number">156</div>
-                        <div class="stat-change positive">All sent</div>
+                    <div style="margin-top: 20px;">
+                        <button id="save-guessers" class="btn btn-success">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Quick Actions -->
-            <div class="admin-card">
-                <h3><i class="fas fa-bolt"></i> QUICK ACTIONS</h3>
+
+                <!-- System Stats -->
+                <div class="admin-card">
+                    <h3><i class="fas fa-chart-line"></i> SYSTEM STATISTICS</h3>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div class="stat-card">
+                            <h4><i class="fas fa-eye"></i> Total Visitors</h4>
+                            <div class="stat-number">1,248</div>
+                            <div class="stat-change positive">+12% today</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <h4><i class="fas fa-users"></i> Active Guessers</h4>
+                            <div class="stat-number">24</div>
+                            <div class="stat-change positive">+3 today</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <h4><i class="fas fa-flag"></i> Results Today</h4>
+                            <div class="stat-number">2/6</div>
+                            <div class="stat-change">4 pending</div>
+                        </div>
+                        
+                        <div class="stat-card">
+                            <h4><i class="fas fa-bell"></i> Notifications</h4>
+                            <div class="stat-number">156</div>
+                            <div class="stat-change positive">All sent</div>
+                        </div>
+                    </div>
+                </div>
                 
-                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <a href="index.html" class="btn btn-outline">
-                        <i class="fas fa-home"></i> View Site
-                    </a>
-                    <a href="manage-results.html" class="btn btn-outline">
-                        <i class="fas fa-edit"></i> Edit Results
-                    </a>
-                    <a href="results-history.html" class="btn btn-outline">
-                        <i class="fas fa-history"></i> Results History
-                    </a>
-                    <button class="btn btn-outline" onclick="sendTestNotification()">
-                        <i class="fas fa-bell"></i> Test Notification
-                    </button>
-                    <button class="btn btn-outline" onclick="backupData()">
-                        <i class="fas fa-download"></i> Backup Data
-                    </button>
+                <!-- Quick Actions -->
+                <div class="admin-card">
+                    <h3><i class="fas fa-bolt"></i> QUICK ACTIONS</h3>
+                    
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <a href="index.html" class="btn btn-outline">
+                            <i class="fas fa-home"></i> View Site
+                        </a>
+                        <a href="manage-results.html" class="btn btn-outline">
+                            <i class="fas fa-edit"></i> Edit Results
+                        </a>
+                        <a href="results-history.html" class="btn btn-outline">
+                            <i class="fas fa-history"></i> Results History
+                        </a>
+                        <button class="btn btn-outline" onclick="sendTestNotification()">
+                            <i class="fas fa-bell"></i> Test Notification
+                        </button>
+                        <button class="btn btn-outline" onclick="backupData()">
+                            <i class="fas fa-download"></i> Backup Data
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="admin-script.js"></script>
     <script>
-        // Set current date
-        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-IN', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
+        // Check login status on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+            const loginOverlay = document.getElementById('loginOverlay');
+            const adminContent = document.getElementById('adminContent');
+            
+            if (isLoggedIn) {
+                // User is logged in, show admin panel
+                loginOverlay.style.display = 'none';
+                adminContent.style.display = 'block';
+                
+                // Set current date
+                document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-IN', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                // Load admin data
+                loadAdminData();
+            } else {
+                // User is not logged in, show login form
+                loginOverlay.style.display = 'flex';
+                adminContent.style.display = 'none';
+            }
+            
+            // Login form submission - SIMPLE VERSION THAT REFRESHES
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                // Admin credentials
+                const ADMIN_CREDENTIALS = {
+                    username: 'admin',
+                    password: 'matka123'
+                };
+                
+                if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+                    // Successful login
+                    localStorage.setItem('adminLoggedIn', 'true');
+                    
+                    // Auto-refresh the page
+                    location.reload();
+                } else {
+                    // Failed login
+                    alert('Invalid username or password!\n\nUse:\nUsername: admin\nPassword: matka123');
+                    document.getElementById('password').value = '';
+                    document.getElementById('password').focus();
+                }
+            });
+            
+            // Logout button
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    localStorage.removeItem('adminLoggedIn');
+                    location.reload(); // Auto-refresh to show login form
+                }
+            });
         });
         
-        // Check if login required
-        if (window.location.search.includes('login')) {
-            showLoginForm();
+        function loadAdminData() {
+            // Load results
+            const savedResults = localStorage.getItem('matkaResults');
+            if (savedResults) {
+                const results = JSON.parse(savedResults);
+                populateResultsForm(results);
+            }
+            
+            // Load guessers
+            loadGuesserData();
+            
+            // Setup admin event listeners
+            setupAdminListeners();
         }
         
-        function showLoginForm() {
-            const html = `
-                <div class="modal">
-                    <div class="modal-content" style="max-width: 400px;">
-                        <h3 style="color: #ff4081; margin-bottom: 20px;">Admin Login</h3>
-                        <div class="form-group">
-                            <label>Username:</label>
-                            <input type="text" id="login-username" class="form-control" placeholder="Enter username">
-                        </div>
-                        <div class="form-group">
-                            <label>Password:</label>
-                            <input type="password" id="login-password" class="form-control" placeholder="Enter password">
-                        </div>
-                        <div style="margin-top: 20px; display: flex; gap: 10px;">
-                            <button onclick="attemptLogin()" class="btn btn-primary" style="flex: 1;">Login</button>
-                            <button onclick="window.location.href='index.html'" class="btn btn-outline">Cancel</button>
-                        </div>
-                    </div>
-                </div>
-            `;
+        function populateResultsForm(results) {
+            const games = [
+                { key: 'faridabad', name: 'Faridabad', elementId: 'result-faridabad' },
+                { key: 'gaziabad', name: 'Gaziabad', elementId: 'result-gaziabad' },
+                { key: 'gali', name: 'Gali', elementId: 'result-gali' },
+                { key: 'deshwar', name: 'Deshwar', elementId: 'result-deshwar' },
+                { key: 'gali_dubai', name: 'Gali Dubai', elementId: 'result-gali-dubai' },
+                { key: 'deshwar_dubai', name: 'Deshwar Dubai', elementId: 'result-deshwar-dubai' }
+            ];
             
-            document.body.insertAdjacentHTML('beforeend', html);
+            games.forEach(game => {
+                const element = document.getElementById(game.elementId);
+                if (element && results[game.key]) {
+                    element.value = results[game.key].result || '';
+                    
+                    // Update status indicator
+                    const statusElement = document.getElementById(`status-${game.key}`);
+                    if (statusElement) {
+                        if (results[game.key].published) {
+                            statusElement.textContent = 'Published';
+                            statusElement.className = 'status-badge published';
+                        } else if (results[game.key].result) {
+                            statusElement.textContent = 'Ready to Publish';
+                            statusElement.className = 'status-badge ready';
+                        } else {
+                            statusElement.textContent = 'Not Set';
+                            statusElement.className = 'status-badge unpublished';
+                        }
+                    }
+                }
+            });
         }
         
-        function attemptLogin() {
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
+        function setupAdminListeners() {
+            // Save results button
+            const saveBtn = document.getElementById('save-results');
+            if (saveBtn) {
+                saveBtn.addEventListener('click', saveResults);
+            }
             
-            if (username === 'admin' && password === 'matka123') {
-                localStorage.setItem('adminLoggedIn', 'true');
-                window.location.href = 'admin.html';
-            } else {
-                alert('Invalid credentials! Try admin / matka123');
+            // Publish results button
+            const publishBtn = document.getElementById('publish-results');
+            if (publishBtn) {
+                publishBtn.addEventListener('click', publishResults);
+            }
+            
+            // Clear all button
+            const clearBtn = document.getElementById('clear-results');
+            if (clearBtn) {
+                clearBtn.addEventListener('click', clearResults);
+            }
+            
+            // Add guesser button
+            const addGuesserBtn = document.getElementById('add-guesser');
+            if (addGuesserBtn) {
+                addGuesserBtn.addEventListener('click', addNewGuesser);
+            }
+            
+            // Save guessers button
+            const saveGuessersBtn = document.getElementById('save-guessers');
+            if (saveGuessersBtn) {
+                saveGuessersBtn.addEventListener('click', saveGuesserChanges);
             }
         }
         
+        function loadGuesserData() {
+            const guessers = JSON.parse(localStorage.getItem('matkaGuessers') || '[]');
+            const container = document.getElementById('guesser-list');
+            
+            if (!container) return;
+            
+            if (guessers.length === 0) {
+                // Add sample guessers
+                const sampleGuessers = [
+                    { id: 'G001', name: 'Raj Kumar', rating: 92, status: 'active', predictions: 45 },
+                    { id: 'G002', name: 'Amit Singh', rating: 88, status: 'active', predictions: 32 },
+                    { id: 'G003', name: 'Suresh Patel', rating: 85, status: 'inactive', predictions: 28 },
+                    { id: 'G004', name: 'Vijay Sharma', rating: 91, status: 'active', predictions: 51 }
+                ];
+                
+                container.innerHTML = sampleGuessers.map(guesser => createGuesserRow(guesser)).join('');
+            } else {
+                container.innerHTML = guessers.map(guesser => createGuesserRow(guesser)).join('');
+            }
+        }
+        
+        function createGuesserRow(guesser) {
+            return `
+                <tr>
+                    <td>${guesser.id}</td>
+                    <td>${guesser.name}</td>
+                    <td><span class="rating-badge">${guesser.rating}%</span></td>
+                    <td>
+                        <select class="form-control status-select" data-id="${guesser.id}" style="padding: 5px; font-size: 0.9rem;">
+                            <option value="active" ${guesser.status === 'active' ? 'selected' : ''}>Active</option>
+                            <option value="inactive" ${guesser.status === 'inactive' ? 'selected' : ''}>Inactive</option>
+                            <option value="suspended" ${guesser.status === 'suspended' ? 'selected' : ''}>Suspended</option>
+                        </select>
+                    </td>
+                    <td>${guesser.predictions}</td>
+                    <td>
+                        <button class="btn btn-small btn-danger" onclick="removeGuesser('${guesser.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        }
+        
+        function saveResults() {
+            const games = [
+                { key: 'faridabad', elementId: 'result-faridabad' },
+                { key: 'gaziabad', elementId: 'result-gaziabad' },
+                { key: 'gali', elementId: 'result-gali' },
+                { key: 'deshwar', elementId: 'result-deshwar' },
+                { key: 'gali_dubai', elementId: 'result-gali-dubai' },
+                { key: 'deshwar_dubai', elementId: 'result-deshwar-dubai' }
+            ];
+            
+            let results = {};
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-IN', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            
+            games.forEach(game => {
+                const element = document.getElementById(game.elementId);
+                if (element && element.value.trim() !== '') {
+                    results[game.key] = {
+                        result: element.value.trim(),
+                        time: timeString,
+                        published: false
+                    };
+                }
+            });
+            
+            // Get existing results
+            const existingResults = JSON.parse(localStorage.getItem('matkaResults') || '{}');
+            
+            // Merge with existing (preserve published status if exists)
+            Object.keys(existingResults).forEach(key => {
+                if (existingResults[key].published) {
+                    results[key] = existingResults[key];
+                }
+            });
+            
+            localStorage.setItem('matkaResults', JSON.stringify(results));
+            
+            // Update UI
+            populateResultsForm(results);
+            
+            showNotification('Results saved successfully! They are ready to publish.', 'success');
+        }
+        
+        function publishResults() {
+            const savedResults = localStorage.getItem('matkaResults');
+            if (!savedResults) {
+                showNotification('No results to publish! Save results first.', 'error');
+                return;
+            }
+            
+            let results = JSON.parse(savedResults);
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-IN', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            
+            // Mark all results as published
+            Object.keys(results).forEach(key => {
+                if (results[key].result) {
+                    results[key].published = true;
+                    results[key].publishTime = timeString;
+                }
+            });
+            
+            localStorage.setItem('matkaResults', JSON.stringify(results));
+            
+            // Update UI
+            populateResultsForm(results);
+            
+            showNotification('Results published successfully! Users can now see them.', 'success');
+        }
+        
+        function clearResults() {
+            if (confirm('Are you sure you want to clear all results? This cannot be undone.')) {
+                localStorage.removeItem('matkaResults');
+                
+                // Clear form
+                const gameInputs = [
+                    'result-faridabad', 'result-gaziabad', 'result-gali',
+                    'result-deshwar', 'result-gali-dubai', 'result-deshwar-dubai'
+                ];
+                
+                gameInputs.forEach(id => {
+                    const element = document.getElementById(id);
+                    if (element) element.value = '';
+                });
+                
+                // Update status indicators
+                const games = ['faridabad', 'gaziabad', 'gali', 'deshwar', 'gali_dubai', 'deshwar_dubai'];
+                games.forEach(game => {
+                    const statusElement = document.getElementById(`status-${game}`);
+                    if (statusElement) {
+                        statusElement.textContent = 'Not Set';
+                        statusElement.className = 'status-badge unpublished';
+                    }
+                });
+                
+                showNotification('All results cleared successfully.', 'info');
+            }
+        }
+        
+        function addNewGuesser() {
+            const guesserId = document.getElementById('new-guesser-id').value.trim();
+            const guesserName = document.getElementById('new-guesser-name').value.trim();
+            
+            if (!guesserId || !guesserName) {
+                showNotification('Please enter both ID and Name', 'error');
+                return;
+            }
+            
+            const guessers = JSON.parse(localStorage.getItem('matkaGuessers') || '[]');
+            
+            // Check if ID already exists
+            if (guessers.some(g => g.id === guesserId)) {
+                showNotification('Guesser ID already exists!', 'error');
+                return;
+            }
+            
+            const newGuesser = {
+                id: guesserId,
+                name: guesserName,
+                rating: 50, // Default rating
+                status: 'active',
+                predictions: 0,
+                joined: new Date().toLocaleDateString()
+            };
+            
+            guessers.push(newGuesser);
+            localStorage.setItem('matkaGuessers', JSON.stringify(guessers));
+            
+            // Add to table
+            const container = document.getElementById('guesser-list');
+            container.innerHTML += createGuesserRow(newGuesser);
+            
+            // Clear form
+            document.getElementById('new-guesser-id').value = '';
+            document.getElementById('new-guesser-name').value = '';
+            
+            showNotification(`Guesser ${guesserName} added successfully!`, 'success');
+        }
+        
+        function removeGuesser(guesserId) {
+            if (confirm(`Are you sure you want to remove guesser ${guesserId}?`)) {
+                let guessers = JSON.parse(localStorage.getItem('matkaGuessers') || '[]');
+                guessers = guessers.filter(g => g.id !== guesserId);
+                localStorage.setItem('matkaGuessers', JSON.stringify(guessers));
+                
+                // Reload table
+                loadGuesserData();
+                
+                showNotification(`Guesser ${guesserId} removed successfully!`, 'info');
+            }
+        }
+        
+        function saveGuesserChanges() {
+            const statusSelects = document.querySelectorAll('.status-select');
+            let guessers = JSON.parse(localStorage.getItem('matkaGuessers') || '[]');
+            
+            statusSelects.forEach(select => {
+                const guesserId = select.dataset.id;
+                const guesserIndex = guessers.findIndex(g => g.id === guesserId);
+                
+                if (guesserIndex !== -1) {
+                    guessers[guesserIndex].status = select.value;
+                }
+            });
+            
+            localStorage.setItem('matkaGuessers', JSON.stringify(guessers));
+            showNotification('Guesser changes saved successfully!', 'success');
+        }
+        
         function sendTestNotification() {
-            alert('Test notification sent to all users!');
+            showNotification('Test notification sent to all users!', 'info');
         }
         
         function backupData() {
@@ -283,7 +692,29 @@
             a.download = `matka-backup-${new Date().getTime()}.json`;
             a.click();
             
-            alert('Backup created successfully!');
+            showNotification('Backup created successfully! File will download automatically.', 'success');
+        }
+        
+        function showNotification(message, type = 'info') {
+            // Remove existing notifications
+            document.querySelectorAll('.notification').forEach(el => el.remove());
+            
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                ${message}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }
+            }, 5000);
         }
     </script>
 </body>
