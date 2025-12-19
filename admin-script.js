@@ -1,164 +1,301 @@
-// Admin Panel JavaScript
+// Admin Panel Script
 document.addEventListener('DOMContentLoaded', function() {
-    const adminLoggedIn = localStorage.getItem('adminLoggedIn');
-    const lastLoginTime = localStorage.getItem('adminLastLogin');
+    // Check if user is admin
+    checkAdminAccess();
     
-    if (adminLoggedIn === 'true') {
-        showAdminDashboard();
-        if (lastLoginTime) {
-            console.log('Last login:', new Date(lastLoginTime).toLocaleString());
-        }
-    } else {
-        document.getElementById('loginScreen').style.display = 'block';
-    }
-    
-    // Default admin credentials
-    if (!localStorage.getItem('adminCredentials')) {
-        localStorage.setItem('adminCredentials', JSON.stringify({
-            username: 'admin',
-            password: 'admin123'
-        }));
-    }
-    
-    // Set up login form
-    const loginForm = document.getElementById('adminLoginForm');
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const username = document.getElementById('adminUsername').value;
-            const password = document.getElementById('adminPassword').value;
-            
-            if (authenticateAdmin(username, password)) {
-                localStorage.setItem('adminLoggedIn', 'true');
-                localStorage.setItem('adminLastLogin', new Date().toISOString());
-                showAdminDashboard();
-                showNotification('Admin login successful!', 'success');
-            } else {
-                showNotification('Invalid credentials!', 'error');
-            }
-        });
-    }
-    
-    // Load initial data
+    // Load existing data
     loadAdminData();
+    
+    // Setup event listeners
+    setupAdminListeners();
+    
+    // Load guesser data
+    loadGuesserData();
 });
 
-// Authentication
-function authenticateAdmin(username, password) {
-    const credentials = JSON.parse(localStorage.getItem('adminCredentials'));
-    return credentials.username === username && credentials.password === password;
-}
+// Admin credentials (in real app, this should be server-side)
+const ADMIN_CREDENTIALS = {
+    username: 'admin',
+    password: 'matka123'
+};
 
-// Show admin dashboard
-function showAdminDashboard() {
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('adminDashboard').style.display = 'block';
+// Check admin access
+function checkAdminAccess() {
+    const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
     
-    loadGameData();
-    loadGuesserList();
-    loadPremiumList();
-    loadContactData();
-    loadAdData();
-}
-
-// Logout function
-function logout() {
-    localStorage.removeItem('adminLoggedIn');
-    location.reload();
-}
-
-// Load game data
-function loadGameData() {
-    const gameId = document.getElementById('gameSelect').value;
-    const games = JSON.parse(localStorage.getItem('matkaGames')) || [];
-    const game = games.find(g => g.id == gameId);
-    
-    if (game) {
-        document.getElementById('gameName').value = game.name;
-        document.getElementById('gameTime').value = game.time;
-        document.getElementById('gameYesterday').value = game.yesterday || '';
-    }
-}
-
-// Update game
-function updateGame() {
-    const gameId = parseInt(document.getElementById('gameSelect').value);
-    const gameName = document.getElementById('gameName').value.trim();
-    const gameTime = document.getElementById('gameTime').value.trim();
-    const gameYesterday = document.getElementById('gameYesterday').value.trim();
-    
-    if (!gameName || !gameTime) {
-        showNotification('Game name and time are required!', 'error');
+    if (!isLoggedIn) {
+        // Redirect to login
+        window.location.href = 'admin.html?login';
         return;
     }
-    
-    let games = JSON.parse(localStorage.getItem('matkaGames')) || [];
-    const gameIndex = games.findIndex(g => g.id === gameId);
-    
-    if (gameIndex === -1) {
-        showNotification('Game not found!', 'error');
-        return;
+}
+
+// Load admin data
+function loadAdminData() {
+    // Load results
+    const savedResults = localStorage.getItem('matkaResults');
+    if (savedResults) {
+        const results = JSON.parse(savedResults);
+        populateResultsForm(results);
     }
     
-    // Update game details
-    games[gameIndex].name = gameName;
-    games[gameIndex].time = gameTime;
+    // Load guessers
+    loadGuesserData();
+}
+
+// Populate results form
+function populateResultsForm(results) {
+    const games = [
+        { key: 'faridabad', name: 'Faridabad', elementId: 'result-faridabad' },
+        { key: 'gaziabad', name: 'Gaziabad', elementId: 'result-gaziabad' },
+        { key: 'gali', name: 'Gali', elementId: 'result-gali' },
+        { key: 'deshwar', name: 'Deshwar', elementId: 'result-deshwar' },
+        { key: 'gali_dubai', name: 'Gali Dubai', elementId: 'result-gali-dubai' },
+        { key: 'deshwar_dubai', name: 'Deshwar Dubai', elementId: 'result-deshwar-dubai' }
+    ];
     
-    if (gameYesterday) {
-        const yesterdayNumber = parseInt(gameYesterday);
-        if (!isNaN(yesterdayNumber) && yesterdayNumber >= 0 && yesterdayNumber <= 99) {
-            games[gameIndex].yesterday = yesterdayNumber;
+    games.forEach(game => {
+        const element = document.getElementById(game.elementId);
+        if (element && results[game.key]) {
+            element.value = results[game.key].result || '';
+            
+            // Update status indicator
+            const statusElement = document.getElementById(`status-${game.key}`);
+            if (statusElement) {
+                if (results[game.key].published) {
+                    statusElement.textContent = 'Published';
+                    statusElement.className = 'status-badge published';
+                } else if (results[game.key].result) {
+                    statusElement.textContent = 'Ready to Publish';
+                    statusElement.className = 'status-badge ready';
+                } else {
+                    statusElement.textContent = 'Not Set';
+                    statusElement.className = 'status-badge unpublished';
+                }
+            }
         }
-    }
-    
-    localStorage.setItem('matkaGames', JSON.stringify(games));
-    showNotification('Game updated successfully!', 'success');
-}
-
-// Load guesser list
-function loadGuesserList() {
-    const guessers = JSON.parse(localStorage.getItem('matkaGuessers')) || [];
-    const guesserList = document.getElementById('guesserList');
-    
-    if (!guesserList) return;
-    
-    guesserList.innerHTML = '';
-    
-    guessers.forEach(guesser => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${guesser.id}</td>
-            <td>${guesser.name}</td>
-            <td>
-                <span class="${guesser.status === 'active' ? 'active-status' : 'inactive-status'}">
-                    ${guesser.status}
-                </span>
-            </td>
-            <td>
-                <button onclick="toggleGuesserStatus('${guesser.id}')" class="btn btn-small ${guesser.status === 'active' ? 'btn-warning' : 'btn-success'}">
-                    ${guesser.status === 'active' ? 'Deactivate' : 'Activate'}
-                </button>
-                <button onclick="deleteGuesser('${guesser.id}')" class="btn btn-small btn-danger">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        `;
-        guesserList.appendChild(row);
     });
 }
 
-// Create guesser
-function createGuesser() {
-    const guesserId = document.getElementById('guesserId').value.trim();
-    const guesserName = document.getElementById('guesserName').value.trim();
-    const password = document.getElementById('guesserPassword').value.trim();
+// Setup admin event listeners
+function setupAdminListeners() {
+    // Save results button
+    const saveBtn = document.getElementById('save-results');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', saveResults);
+    }
     
-    if (!guesserId || !guesserName || !password) {
-        showNotification('All fields are required!', 'error');
+    // Publish results button
+    const publishBtn = document.getElementById('publish-results');
+    if (publishBtn) {
+        publishBtn.addEventListener('click', publishResults);
+    }
+    
+    // Clear all button
+    const clearBtn = document.getElementById('clear-results');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', clearResults);
+    }
+    
+    // Logout button
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', logoutAdmin);
+    }
+    
+    // Add guesser button
+    const addGuesserBtn = document.getElementById('add-guesser');
+    if (addGuesserBtn) {
+        addGuesserBtn.addEventListener('click', addNewGuesser);
+    }
+    
+    // Save guessers button
+    const saveGuessersBtn = document.getElementById('save-guessers');
+    if (saveGuessersBtn) {
+        saveGuessersBtn.addEventListener('click', saveGuesserChanges);
+    }
+}
+
+// Save results (without publishing)
+function saveResults() {
+    const games = [
+        { key: 'faridabad', elementId: 'result-faridabad' },
+        { key: 'gaziabad', elementId: 'result-gaziabad' },
+        { key: 'gali', elementId: 'result-gali' },
+        { key: 'deshwar', elementId: 'result-deshwar' },
+        { key: 'gali_dubai', elementId: 'result-gali-dubai' },
+        { key: 'deshwar_dubai', elementId: 'result-deshwar-dubai' }
+    ];
+    
+    let results = {};
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-IN', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+    });
+    
+    games.forEach(game => {
+        const element = document.getElementById(game.elementId);
+        if (element && element.value.trim() !== '') {
+            results[game.key] = {
+                result: element.value.trim(),
+                time: timeString,
+                published: false
+            };
+        }
+    });
+    
+    // Get existing results
+    const existingResults = JSON.parse(localStorage.getItem('matkaResults') || '{}');
+    
+    // Merge with existing (preserve published status if exists)
+    Object.keys(existingResults).forEach(key => {
+        if (existingResults[key].published) {
+            results[key] = existingResults[key];
+        }
+    });
+    
+    localStorage.setItem('matkaResults', JSON.stringify(results));
+    
+    // Update UI
+    populateResultsForm(results);
+    
+    showNotification('Results saved successfully! They are ready to publish.', 'success');
+}
+
+// Publish results
+function publishResults() {
+    const savedResults = localStorage.getItem('matkaResults');
+    if (!savedResults) {
+        showNotification('No results to publish! Save results first.', 'error');
         return;
     }
     
-    let guessers = JSON.parse(localStorage.getItem('matkaGuessers')) || [];
+    let results = JSON.parse(savedResults);
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-IN', { 
+        hour: '2-digit', 
+        minute: '2-digit',
+        hour12: true 
+    });
+    
+    // Mark all results as published
+    Object.keys(results).forEach(key => {
+        if (results[key].result) {
+            results[key].published = true;
+            results[key].publishTime = timeString;
+        }
+    });
+    
+    localStorage.setItem('matkaResults', JSON.stringify(results));
+    
+    // Update UI
+    populateResultsForm(results);
+    
+    showNotification('Results published successfully! Users can now see them.', 'success');
+    
+    // Simulate notification to all users
+    setTimeout(() => {
+        if (window.opener) {
+            window.opener.showNotification('New results have been published!', 'info');
+        }
+    }, 500);
+}
+
+// Clear all results
+function clearResults() {
+    if (confirm('Are you sure you want to clear all results? This cannot be undone.')) {
+        localStorage.removeItem('matkaResults');
+        
+        // Clear form
+        const gameInputs = [
+            'result-faridabad', 'result-gaziabad', 'result-gali',
+            'result-deshwar', 'result-gali-dubai', 'result-deshwar-dubai'
+        ];
+        
+        gameInputs.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) element.value = '';
+        });
+        
+        // Update status indicators
+        const games = ['faridabad', 'gaziabad', 'gali', 'deshwar', 'gali_dubai', 'deshwar_dubai'];
+        games.forEach(game => {
+            const statusElement = document.getElementById(`status-${game}`);
+            if (statusElement) {
+                statusElement.textContent = 'Not Set';
+                statusElement.className = 'status-badge unpublished';
+            }
+        });
+        
+        showNotification('All results cleared successfully.', 'info');
+    }
+}
+
+// Logout admin
+function logoutAdmin() {
+    localStorage.removeItem('adminLoggedIn');
+    window.location.href = 'admin.html';
+}
+
+// Load guesser data
+function loadGuesserData() {
+    const guessers = JSON.parse(localStorage.getItem('matkaGuessers') || '[]');
+    const container = document.getElementById('guesser-list');
+    
+    if (!container) return;
+    
+    if (guessers.length === 0) {
+        // Add sample guessers
+        const sampleGuessers = [
+            { id: 'G001', name: 'Raj Kumar', rating: 92, status: 'active', predictions: 45 },
+            { id: 'G002', name: 'Amit Singh', rating: 88, status: 'active', predictions: 32 },
+            { id: 'G003', name: 'Suresh Patel', rating: 85, status: 'inactive', predictions: 28 },
+            { id: 'G004', name: 'Vijay Sharma', rating: 91, status: 'active', predictions: 51 }
+        ];
+        
+        container.innerHTML = sampleGuessers.map(guesser => createGuesserRow(guesser)).join('');
+    } else {
+        container.innerHTML = guessers.map(guesser => createGuesserRow(guesser)).join('');
+    }
+}
+
+// Create guesser table row
+function createGuesserRow(guesser) {
+    return `
+        <tr>
+            <td>${guesser.id}</td>
+            <td>${guesser.name}</td>
+            <td><span class="rating-badge">${guesser.rating}%</span></td>
+            <td>
+                <select class="form-control status-select" data-id="${guesser.id}">
+                    <option value="active" ${guesser.status === 'active' ? 'selected' : ''}>Active</option>
+                    <option value="inactive" ${guesser.status === 'inactive' ? 'selected' : ''}>Inactive</option>
+                    <option value="suspended" ${guesser.status === 'suspended' ? 'selected' : ''}>Suspended</option>
+                </select>
+            </td>
+            <td>${guesser.predictions}</td>
+            <td>
+                <button class="btn btn-small btn-danger" onclick="removeGuesser('${guesser.id}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        </tr>
+    `;
+}
+
+// Add new guesser
+function addNewGuesser() {
+    const guesserId = document.getElementById('new-guesser-id').value.trim();
+    const guesserName = document.getElementById('new-guesser-name').value.trim();
+    
+    if (!guesserId || !guesserName) {
+        showNotification('Please enter both ID and Name', 'error');
+        return;
+    }
+    
+    const guessers = JSON.parse(localStorage.getItem('matkaGuessers') || '[]');
     
     // Check if ID already exists
     if (guessers.some(g => g.id === guesserId)) {
@@ -166,404 +303,80 @@ function createGuesser() {
         return;
     }
     
-    // Add new guesser
-    guessers.push({
+    const newGuesser = {
         id: guesserId,
         name: guesserName,
-        password: password,
+        rating: 50, // Default rating
         status: 'active',
-        rating: 4.5,
-        createdAt: new Date().toISOString()
-    });
+        predictions: 0,
+        joined: new Date().toLocaleDateString()
+    };
     
+    guessers.push(newGuesser);
     localStorage.setItem('matkaGuessers', JSON.stringify(guessers));
+    
+    // Add to table
+    const container = document.getElementById('guesser-list');
+    container.innerHTML += createGuesserRow(newGuesser);
     
     // Clear form
-    document.getElementById('guesserId').value = '';
-    document.getElementById('guesserName').value = '';
-    document.getElementById('guesserPassword').value = '';
+    document.getElementById('new-guesser-id').value = '';
+    document.getElementById('new-guesser-name').value = '';
     
-    showNotification(`Guesser ${guesserId} created successfully!`, 'success');
-    loadGuesserList();
+    showNotification(`Guesser ${guesserName} added successfully!`, 'success');
 }
 
-// Toggle guesser status
-function toggleGuesserStatus(guesserId) {
-    let guessers = JSON.parse(localStorage.getItem('matkaGuessers')) || [];
-    const guesserIndex = guessers.findIndex(g => g.id === guesserId);
-    
-    if (guesserIndex !== -1) {
-        guessers[guesserIndex].status = guessers[guesserIndex].status === 'active' ? 'inactive' : 'active';
+// Remove guesser
+function removeGuesser(guesserId) {
+    if (confirm(`Are you sure you want to remove guesser ${guesserId}?`)) {
+        let guessers = JSON.parse(localStorage.getItem('matkaGuessers') || '[]');
+        guessers = guessers.filter(g => g.id !== guesserId);
         localStorage.setItem('matkaGuessers', JSON.stringify(guessers));
-        loadGuesserList();
-        showNotification('Guesser status updated!', 'success');
+        
+        // Reload table
+        loadGuesserData();
+        
+        showNotification(`Guesser ${guesserId} removed successfully!`, 'info');
     }
 }
 
-// Delete guesser
-function deleteGuesser(guesserId) {
-    if (!confirm('Delete this guesser?')) return;
+// Save guesser changes
+function saveGuesserChanges() {
+    const statusSelects = document.querySelectorAll('.status-select');
+    let guessers = JSON.parse(localStorage.getItem('matkaGuessers') || '[]');
     
-    let guessers = JSON.parse(localStorage.getItem('matkaGuessers')) || [];
-    guessers = guessers.filter(g => g.id !== guesserId);
-    localStorage.setItem('matkaGuessers', JSON.stringify(guessers));
-    
-    // Also delete their predictions
-    let predictions = JSON.parse(localStorage.getItem('matkaPredictions') || '[]');
-    predictions = predictions.filter(p => p.guesserId !== guesserId);
-    localStorage.setItem('matkaPredictions', JSON.stringify(predictions));
-    
-    showNotification('Guesser deleted!', 'success');
-    loadGuesserList();
-}
-
-// Load premium list
-function loadPremiumList() {
-    const premium = JSON.parse(localStorage.getItem('matkaPremium')) || [];
-    const premiumList = document.getElementById('premiumList');
-    
-    if (!premiumList) return;
-    
-    premiumList.innerHTML = '';
-    
-    premium.forEach(user => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${user.id}</td>
-            <td>${user.name}</td>
-            <td>
-                <span class="${user.status === 'active' ? 'active-status' : 'inactive-status'}">
-                    ${user.status}
-                </span>
-            </td>
-            <td>
-                <button onclick="togglePremiumStatus('${user.id}')" class="btn btn-small ${user.status === 'active' ? 'btn-warning' : 'btn-success'}">
-                    ${user.status === 'active' ? 'Deactivate' : 'Activate'}
-                </button>
-                <button onclick="deletePremium('${user.id}')" class="btn btn-small btn-danger">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        `;
-        premiumList.appendChild(row);
-    });
-}
-
-// Create premium user
-function createPremium() {
-    const premiumId = document.getElementById('premiumId').value.trim();
-    const premiumName = document.getElementById('premiumName').value.trim();
-    const password = document.getElementById('premiumPassword').value.trim();
-    
-    if (!premiumId || !premiumName || !password) {
-        showNotification('All fields are required!', 'error');
-        return;
-    }
-    
-    let premium = JSON.parse(localStorage.getItem('matkaPremium')) || [];
-    
-    if (premium.some(p => p.id === premiumId)) {
-        showNotification('Premium ID already exists!', 'error');
-        return;
-    }
-    
-    premium.push({
-        id: premiumId,
-        name: premiumName,
-        password: password,
-        status: 'active',
-        createdAt: new Date().toISOString()
-    });
-    
-    localStorage.setItem('matkaPremium', JSON.stringify(premium));
-    
-    document.getElementById('premiumId').value = '';
-    document.getElementById('premiumName').value = '';
-    document.getElementById('premiumPassword').value = '';
-    
-    showNotification(`Premium user ${premiumId} created!`, 'success');
-    loadPremiumList();
-}
-
-// Toggle premium status
-function togglePremiumStatus(userId) {
-    let premium = JSON.parse(localStorage.getItem('matkaPremium')) || [];
-    const userIndex = premium.findIndex(p => p.id === userId);
-    
-    if (userIndex !== -1) {
-        premium[userIndex].status = premium[userIndex].status === 'active' ? 'inactive' : 'active';
-        localStorage.setItem('matkaPremium', JSON.stringify(premium));
-        loadPremiumList();
-        showNotification('Premium user status updated!', 'success');
-    }
-}
-
-// Delete premium user
-function deletePremium(userId) {
-    if (!confirm('Delete this premium user?')) return;
-    
-    let premium = JSON.parse(localStorage.getItem('matkaPremium')) || [];
-    premium = premium.filter(p => p.id !== userId);
-    localStorage.setItem('matkaPremium', JSON.stringify(premium));
-    
-    showNotification('Premium user deleted!', 'success');
-    loadPremiumList();
-}
-
-// Load contact data
-function loadContactData() {
-    const contacts = JSON.parse(localStorage.getItem('matkaContacts')) || [];
-    
-    contacts.forEach(contact => {
-        switch(contact.platform) {
-            case 'Telegram Group':
-                document.getElementById('telegramGroup').value = contact.url;
-                break;
-            case 'WhatsApp Support':
-                document.getElementById('whatsappSupport').value = contact.url;
-                break;
-            case 'Khaiwal Telegram':
-                document.getElementById('khaiwalTelegram').value = contact.url;
-                break;
-            case 'Support Email':
-                document.getElementById('supportEmail').value = contact.url;
-                break;
+    statusSelects.forEach(select => {
+        const guesserId = select.dataset.id;
+        const guesserIndex = guessers.findIndex(g => g.id === guesserId);
+        
+        if (guesserIndex !== -1) {
+            guessers[guesserIndex].status = select.value;
         }
     });
+    
+    localStorage.setItem('matkaGuessers', JSON.stringify(guessers));
+    showNotification('Guesser changes saved successfully!', 'success');
 }
 
-// Update contacts
-function updateContacts() {
-    const contacts = [
-        { platform: 'Telegram Group', url: document.getElementById('telegramGroup').value.trim(), icon: 'fab fa-telegram' },
-        { platform: 'WhatsApp Support', url: document.getElementById('whatsappSupport').value.trim(), icon: 'fab fa-whatsapp' },
-        { platform: 'Khaiwal Telegram', url: document.getElementById('khaiwalTelegram').value.trim(), icon: 'fab fa-telegram' },
-        { platform: 'Support Email', url: document.getElementById('supportEmail').value.trim(), icon: 'fas fa-envelope' }
-    ];
-    
-    localStorage.setItem('matkaContacts', JSON.stringify(contacts));
-    showNotification('Contact links updated!', 'success');
-}
-
-// Load ad data
-function loadAdData() {
-    const ads = JSON.parse(localStorage.getItem('matkaAds')) || {};
-    
-    if (ads.topBanner) {
-        document.getElementById('topBannerAd').value = ads.topBanner;
-    }
-    if (ads.sidebar) {
-        document.getElementById('sidebarAd').value = ads.sidebar;
-    }
-    if (ads.rectangle) {
-        document.getElementById('rectangleAd').value = ads.rectangle;
-    }
-}
-
-// Update ads
-function updateAds() {
-    const ads = {
-        topBanner: document.getElementById('topBannerAd').value.trim(),
-        sidebar: document.getElementById('sidebarAd').value.trim(),
-        rectangle: document.getElementById('rectangleAd').value.trim()
-    };
-    
-    localStorage.setItem('matkaAds', JSON.stringify(ads));
-    showNotification('Ads updated successfully!', 'success');
-}
-
-// Save historical result
-function saveHistoricalResult() {
-    const date = document.getElementById('resultDate').value;
-    const gameId = parseInt(document.getElementById('resultGame').value);
-    const number = document.getElementById('resultNumber').value.trim();
-    
-    if (!date || !number) {
-        showNotification('Date and number are required!', 'error');
-        return;
-    }
-    
-    const resultNumber = parseInt(number);
-    if (isNaN(resultNumber) || resultNumber < 0 || resultNumber > 99) {
-        showNotification('Please enter a valid number (00-99)!', 'error');
-        return;
-    }
-    
-    let games = JSON.parse(localStorage.getItem('matkaGames')) || [];
-    const gameIndex = games.findIndex(g => g.id === gameId);
-    
-    if (gameIndex === -1) {
-        showNotification('Game not found!', 'error');
-        return;
-    }
-    
-    // Add historical result
-    games[gameIndex].results.push({
-        date: new Date(date).toISOString(),
-        number: resultNumber,
-        published: true
-    });
-    
-    localStorage.setItem('matkaGames', JSON.stringify(games));
-    showNotification('Historical result saved!', 'success');
-}
-
-// Export all data
-function exportAllData() {
-    const data = {
-        games: JSON.parse(localStorage.getItem('matkaGames') || '[]'),
-        guessers: JSON.parse(localStorage.getItem('matkaGuessers') || '[]'),
-        premium: JSON.parse(localStorage.getItem('matkaPremium') || '[]'),
-        predictions: JSON.parse(localStorage.getItem('matkaPredictions') || '[]'),
-        contacts: JSON.parse(localStorage.getItem('matkaContacts') || '[]'),
-        ads: JSON.parse(localStorage.getItem('matkaAds') || '{}'),
-        exportDate: new Date().toISOString()
-    };
-    
-    const dataStr = JSON.stringify(data, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    
-    const link = document.createElement('a');
-    link.setAttribute('href', dataUri);
-    link.setAttribute('download', `matka-backup-${new Date().toISOString().split('T')[0]}.json`);
-    link.click();
-    
-    showNotification('Data exported successfully!', 'success');
-}
-
-// Clear all data
-function clearAllData() {
-    if (!confirm('WARNING: This will delete ALL data!')) return;
-    
-    localStorage.clear();
-    initializeStorage();
-    showNotification('All data cleared! Default data restored.', 'warning');
-    loadAdminData();
-}
-
-// Reset to default
-function resetToDefault() {
-    if (!confirm('Reset to default settings?')) return;
-    
-    const credentials = localStorage.getItem('adminCredentials');
-    const loggedIn = localStorage.getItem('adminLoggedIn');
-    
-    localStorage.clear();
-    
-    if (credentials) localStorage.setItem('adminCredentials', credentials);
-    if (loggedIn) localStorage.setItem('adminLoggedIn', loggedIn);
-    
-    initializeStorage();
-    showNotification('Reset to default successful!', 'success');
-    loadAdminData();
-}
-
-// Backup data
-function backupData() {
-    const backup = {};
-    for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        backup[key] = localStorage.getItem(key);
-    }
-    
-    localStorage.setItem('backup_' + Date.now(), JSON.stringify(backup));
-    showNotification('Backup created successfully!', 'success');
-}
-
-// Load all admin data
-function loadAdminData() {
-    loadGameData();
-    loadGuesserList();
-    loadPremiumList();
-    loadContactData();
-    loadAdData();
-}
-
-// Helper function for notifications
+// Show notification
 function showNotification(message, type = 'info') {
+    // Remove existing notifications
+    document.querySelectorAll('.notification').forEach(el => el.remove());
+    
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
-    notification.textContent = message;
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${type === 'success' ? '#00c853' : type === 'error' ? '#ff1744' : '#2196f3'};
-        color: white;
-        padding: 15px 25px;
-        border-radius: 5px;
-        z-index: 1000;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        animation: slideIn 0.3s ease;
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+        ${message}
     `;
     
     document.body.appendChild(notification);
     
+    // Auto-remove after 5 seconds
     setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-}
-
-// Initialize storage (from main script)
-function initializeStorage() {
-    if (!localStorage.getItem('matkaGames')) {
-        const games = [
-            { 
-                id: 1, 
-                name: 'FARIDABAD', 
-                time: '17:15', 
-                yesterday: 70, 
-                today: null, 
-                results: [],
-                isPublished: false
-            },
-            { 
-                id: 2, 
-                name: 'GAZIABAD', 
-                time: '21:15', 
-                yesterday: 70, 
-                today: null, 
-                results: [],
-                isPublished: false
-            },
-            { 
-                id: 3, 
-                name: 'GALI', 
-                time: '22:30', 
-                yesterday: 20, 
-                today: null, 
-                results: [],
-                isPublished: false
-            },
-            { 
-                id: 4, 
-                name: 'DESHWAR', 
-                time: '16:45', 
-                yesterday: 25, 
-                today: null, 
-                results: [],
-                isPublished: false
-            },
-            { 
-                id: 5, 
-                name: 'GALI DUBAI', 
-                time: '14:30', 
-                yesterday: 30, 
-                today: null, 
-                results: [],
-                isPublished: false
-            },
-            { 
-                id: 6, 
-                name: 'DESHWAR DUBAI', 
-                time: '23:45', 
-                yesterday: 35, 
-                today: null, 
-                results: [],
-                isPublished: false
-            }
-        ];
-        localStorage.setItem('matkaGames', JSON.stringify(games));
-    }
+        if (notification.parentNode) {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }
+    }, 5000);
 }
