@@ -8,273 +8,283 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Admin Login Screen -->
-    <div id="loginScreen" class="login-container">
-        <div class="login-header">
-            <h2><i class="fas fa-lock"></i> Admin Login</h2>
-            <p>Enter admin credentials to access the panel</p>
-        </div>
-        <form id="adminLoginForm">
-            <div class="form-group">
-                <label for="adminUsername">Username</label>
-                <input type="text" id="adminUsername" class="form-control" placeholder="Enter username" required>
-            </div>
-            <div class="form-group">
-                <label for="adminPassword">Password</label>
-                <input type="password" id="adminPassword" class="form-control" placeholder="Enter password" required>
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary" style="width: 100%;">
-                    <i class="fas fa-sign-in-alt"></i> Login
+    <div class="admin-panel">
+        <div class="container">
+            <!-- Admin Header -->
+            <div class="admin-header">
+                <h1><i class="fas fa-lock"></i> MATKA KING ADMIN PANEL</h1>
+                <p>Control results, manage guessers, and monitor activities</p>
+                <button id="logout-btn" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
             </div>
-        </form>
-        <div style="text-align: center; margin-top: 20px;">
-            <a href="index.html" style="color: #ff4081; text-decoration: none;">
-                <i class="fas fa-arrow-left"></i> Back to Home
-            </a>
-        </div>
-    </div>
 
-    <!-- Admin Dashboard (Hidden by default) -->
-    <div id="adminDashboard" style="display: none;">
-        <!-- Header -->
-        <header class="header">
-            <div class="container">
-                <div class="logo">
-                    <h1>MATKA KING - ADMIN PANEL</h1>
-                    <p>Complete Control Center</p>
+            <!-- Results Management -->
+            <div class="admin-card">
+                <h3><i class="fas fa-flag-checkered"></i> MANAGE TODAY'S RESULTS</h3>
+                
+                <div class="today-date">
+                    <i class="fas fa-calendar"></i> Today: <span id="current-date"></span>
                 </div>
-                <div class="header-buttons">
-                    <button onclick="logout()" class="btn btn-danger">
-                        <i class="fas fa-sign-out-alt"></i> Logout
+                
+                <div class="results-form-grid">
+                    <!-- Faridabad -->
+                    <div class="result-set-card">
+                        <h4>FARIDABAD (5:15 PM)</h4>
+                        <div class="form-group">
+                            <label>Result Number (00-99):</label>
+                            <input type="text" id="result-faridabad" class="form-control" maxlength="2" 
+                                   placeholder="Enter result">
+                        </div>
+                        <div id="status-faridabad" class="status-badge unpublished">Not Set</div>
+                    </div>
+                    
+                    <!-- Gaziabad -->
+                    <div class="result-set-card">
+                        <h4>GAZIABAD (9:15 PM)</h4>
+                        <div class="form-group">
+                            <label>Result Number (00-99):</label>
+                            <input type="text" id="result-gaziabad" class="form-control" maxlength="2" 
+                                   placeholder="Enter result">
+                        </div>
+                        <div id="status-gaziabad" class="status-badge unpublished">Not Set</div>
+                    </div>
+                    
+                    <!-- Gali -->
+                    <div class="result-set-card">
+                        <h4>GALI (10:30 PM)</h4>
+                        <div class="form-group">
+                            <label>Result Number (00-99):</label>
+                            <input type="text" id="result-gali" class="form-control" maxlength="2" 
+                                   placeholder="Enter result">
+                        </div>
+                        <div id="status-gali" class="status-badge unpublished">Not Set</div>
+                    </div>
+                    
+                    <!-- Deshwar -->
+                    <div class="result-set-card">
+                        <h4>DESHWAR (4:45 PM)</h4>
+                        <div class="form-group">
+                            <label>Result Number (00-99):</label>
+                            <input type="text" id="result-deshwar" class="form-control" maxlength="2" 
+                                   placeholder="Enter result">
+                        </div>
+                        <div id="status-deshwar" class="status-badge unpublished">Not Set</div>
+                    </div>
+                    
+                    <!-- Gali Dubai -->
+                    <div class="result-set-card">
+                        <h4>GALI DUBAI (2:30 PM)</h4>
+                        <div class="form-group">
+                            <label>Result Number (00-99):</label>
+                            <input type="text" id="result-gali-dubai" class="form-control" maxlength="2" 
+                                   placeholder="Enter result">
+                        </div>
+                        <div id="status-gali_dubai" class="status-badge unpublished">Not Set</div>
+                    </div>
+                    
+                    <!-- Deshwar Dubai -->
+                    <div class="result-set-card">
+                        <h4>DESHWAR DUBAI (11:45 PM)</h4>
+                        <div class="form-group">
+                            <label>Result Number (00-99):</label>
+                            <input type="text" id="result-deshwar-dubai" class="form-control" maxlength="2" 
+                                   placeholder="Enter result">
+                        </div>
+                        <div id="status-deshwar_dubai" class="status-badge unpublished">Not Set</div>
+                    </div>
+                </div>
+                
+                <div class="form-actions" style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button id="save-results" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Results
+                    </button>
+                    <button id="publish-results" class="btn btn-success">
+                        <i class="fas fa-broadcast-tower"></i> Publish Results
+                    </button>
+                    <button id="clear-results" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Clear All
                     </button>
                 </div>
             </div>
-        </header>
 
-        <!-- Main Content -->
-        <main class="container admin-panel">
-            <div class="admin-header">
-                <h1><i class="fas fa-cogs"></i> Admin Dashboard</h1>
-                <p>Manage everything from this panel</p>
-            </div>
-
-            <!-- Dashboard Grid -->
-            <div class="admin-grid">
-                <!-- Game Management -->
-                <div class="admin-card">
-                    <h3><i class="fas fa-dice"></i> Manage 6 Games</h3>
-                    <div class="form-group">
-                        <label>Select Game</label>
-                        <select id="gameSelect" class="form-control" onchange="loadGameData()">
-                            <option value="1">FARIDABAD</option>
-                            <option value="2">GAZIABAD</option>
-                            <option value="3">GALI</option>
-                            <option value="4">DESHWAR</option>
-                            <option value="5">GALI DUBAI</option>
-                            <option value="6">DESHWAR DUBAI</option>
-                        </select>
+            <!-- Guesser Management -->
+            <div class="admin-card">
+                <h3><i class="fas fa-users"></i> MANAGE GUESSERS</h3>
+                
+                <!-- Add New Guesser -->
+                <div class="form-group" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <div style="flex: 1;">
+                        <label>New Guesser ID:</label>
+                        <input type="text" id="new-guesser-id" class="form-control" placeholder="G001">
                     </div>
-                    <div class="form-group">
-                        <label>Game Name</label>
-                        <input type="text" id="gameName" class="form-control" placeholder="Game name">
+                    <div style="flex: 2;">
+                        <label>Guesser Name:</label>
+                        <input type="text" id="new-guesser-name" class="form-control" placeholder="Enter name">
                     </div>
-                    <div class="form-group">
-                        <label>Game Time (24-hour format)</label>
-                        <input type="text" id="gameTime" class="form-control" placeholder="HH:MM">
-                    </div>
-                    <div class="form-group">
-                        <label>Yesterday's Result (00-99)</label>
-                        <input type="number" id="gameYesterday" class="form-control" placeholder="e.g., 70" min="0" max="99">
-                    </div>
-                    <button onclick="updateGame()" class="btn btn-primary" style="width: 100%;">
-                        <i class="fas fa-save"></i> Update Game
-                    </button>
-                </div>
-
-                <!-- Guesser Management -->
-                <div class="admin-card">
-                    <h3><i class="fas fa-users"></i> Manage Guessers</h3>
-                    <div class="form-group">
-                        <label>Guesser ID</label>
-                        <input type="text" id="guesserId" class="form-control" placeholder="Create guesser ID">
-                    </div>
-                    <div class="form-group">
-                        <label>Guesser Name</label>
-                        <input type="text" id="guesserName" class="form-control" placeholder="Guesser full name">
-                    </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="text" id="guesserPassword" class="form-control" placeholder="Set password">
-                    </div>
-                    <button onclick="createGuesser()" class="btn btn-success" style="width: 100%; margin-bottom: 20px;">
-                        <i class="fas fa-user-plus"></i> Create Guesser Account
-                    </button>
-                    
-                    <h4>Active Guessers</h4>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="guesserList">
-                                <!-- Guesser list will be loaded here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Premium User Management -->
-                <div class="admin-card">
-                    <h3><i class="fas fa-crown"></i> Premium Users</h3>
-                    <div class="form-group">
-                        <label>Premium ID</label>
-                        <input type="text" id="premiumId" class="form-control" placeholder="Create premium ID">
-                    </div>
-                    <div class="form-group">
-                        <label>User Name</label>
-                        <input type="text" id="premiumName" class="form-control" placeholder="User name">
-                    </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="text" id="premiumPassword" class="form-control" placeholder="Set password">
-                    </div>
-                    <button onclick="createPremium()" class="btn btn-premium" style="width: 100%; margin-bottom: 20px;">
-                        <i class="fas fa-plus"></i> Create Premium Account
-                    </button>
-                    
-                    <h4>Premium Users</h4>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="premiumList">
-                                <!-- Premium list will be loaded here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Contact Links Management -->
-                <div class="admin-card">
-                    <h3><i class="fas fa-link"></i> Contact Links</h3>
-                    <div class="form-group">
-                        <label>Telegram Group Link</label>
-                        <input type="text" id="telegramGroup" class="form-control" placeholder="Telegram group URL">
-                    </div>
-                    <div class="form-group">
-                        <label>WhatsApp Support</label>
-                        <input type="text" id="whatsappSupport" class="form-control" placeholder="WhatsApp URL">
-                    </div>
-                    <div class="form-group">
-                        <label>Khaiwal Telegram</label>
-                        <input type="text" id="khaiwalTelegram" class="form-control" placeholder="Khaiwal Telegram URL">
-                    </div>
-                    <div class="form-group">
-                        <label>Support Email</label>
-                        <input type="text" id="supportEmail" class="form-control" placeholder="Support email">
-                    </div>
-                    <button onclick="updateContacts()" class="btn btn-primary" style="width: 100%;">
-                        <i class="fas fa-save"></i> Update Contact Links
-                    </button>
-                </div>
-
-                <!-- Advertisement Management -->
-                <div class="admin-card">
-                    <h3><i class="fas fa-ad"></i> Manage Ads</h3>
-                    <div class="form-group">
-                        <label>Top Banner Ad (728x90)</label>
-                        <textarea id="topBannerAd" class="form-control" rows="3" placeholder="Paste top banner ad code"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Sidebar Ad (300x600)</label>
-                        <textarea id="sidebarAd" class="form-control" rows="3" placeholder="Paste sidebar ad code"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Rectangle Ad (300x250)</label>
-                        <textarea id="rectangleAd" class="form-control" rows="3" placeholder="Paste rectangle ad code"></textarea>
-                    </div>
-                    <button onclick="updateAds()" class="btn btn-primary" style="width: 100%;">
-                        <i class="fas fa-sync-alt"></i> Update All Ads
-                    </button>
-                </div>
-
-                <!-- Results Management -->
-                <div class="admin-card">
-                    <h3><i class="fas fa-history"></i> Manage Results</h3>
-                    <div class="form-group">
-                        <label>Select Date</label>
-                        <input type="date" id="resultDate" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label>Select Game</label>
-                        <select id="resultGame" class="form-control">
-                            <option value="1">FARIDABAD</option>
-                            <option value="2">GAZIABAD</option>
-                            <option value="3">GALI</option>
-                            <option value="4">DESHWAR</option>
-                            <option value="5">GALI DUBAI</option>
-                            <option value="6">DESHWAR DUBAI</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Result Number (00-99)</label>
-                        <input type="number" id="resultNumber" class="form-control" placeholder="e.g., 34" min="0" max="99">
-                    </div>
-                    <button onclick="saveHistoricalResult()" class="btn btn-primary" style="width: 100%;">
-                        <i class="fas fa-save"></i> Save Historical Result
-                    </button>
-                    
-                    <div style="margin-top: 20px;">
-                        <button onclick="exportAllData()" class="btn btn-success" style="width: 100%;">
-                            <i class="fas fa-download"></i> Export All Data
+                    <div style="align-self: flex-end;">
+                        <button id="add-guesser" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add
                         </button>
                     </div>
                 </div>
+                
+                <!-- Guesser List -->
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Guesser ID</th>
+                                <th>Name</th>
+                                <th>Rating</th>
+                                <th>Status</th>
+                                <th>Predictions</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guesser-list">
+                            <!-- Guesser rows will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button id="save-guessers" class="btn btn-success">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
             </div>
 
-            <!-- System Controls -->
-            <div class="admin-card" style="margin-top: 30px;">
-                <h3><i class="fas fa-sliders-h"></i> System Controls</h3>
+            <!-- System Stats -->
+            <div class="admin-card">
+                <h3><i class="fas fa-chart-line"></i> SYSTEM STATISTICS</h3>
+                
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                    <a href="manage-results.html" class="btn btn-primary">
-                        <i class="fas fa-flag-checkered"></i> Manage Results
+                    <div class="stat-card">
+                        <h4><i class="fas fa-eye"></i> Total Visitors</h4>
+                        <div class="stat-number">1,248</div>
+                        <div class="stat-change positive">+12% today</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <h4><i class="fas fa-users"></i> Active Guessers</h4>
+                        <div class="stat-number">24</div>
+                        <div class="stat-change positive">+3 today</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <h4><i class="fas fa-flag"></i> Results Today</h4>
+                        <div class="stat-number">2/6</div>
+                        <div class="stat-change">4 pending</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <h4><i class="fas fa-bell"></i> Notifications</h4>
+                        <div class="stat-number">156</div>
+                        <div class="stat-change positive">All sent</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="admin-card">
+                <h3><i class="fas fa-bolt"></i> QUICK ACTIONS</h3>
+                
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <a href="index.html" class="btn btn-outline">
+                        <i class="fas fa-home"></i> View Site
                     </a>
-                    <button onclick="clearAllData()" class="btn btn-danger">
-                        <i class="fas fa-trash"></i> Clear All Data
+                    <a href="manage-results.html" class="btn btn-outline">
+                        <i class="fas fa-edit"></i> Edit Results
+                    </a>
+                    <a href="results-history.html" class="btn btn-outline">
+                        <i class="fas fa-history"></i> Results History
+                    </a>
+                    <button class="btn btn-outline" onclick="sendTestNotification()">
+                        <i class="fas fa-bell"></i> Test Notification
                     </button>
-                    <button onclick="resetToDefault()" class="btn btn-warning">
-                        <i class="fas fa-undo"></i> Reset to Default
-                    </button>
-                    <button onclick="backupData()" class="btn btn-success">
-                        <i class="fas fa-database"></i> Backup Data
+                    <button class="btn btn-outline" onclick="backupData()">
+                        <i class="fas fa-download"></i> Backup Data
                     </button>
                 </div>
             </div>
-        </main>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <div class="container">
-                <div class="footer-bottom">
-                    <p>Admin Panel - Matka King &copy; 2024</p>
-                </div>
-            </div>
-        </footer>
+        </div>
     </div>
 
     <script src="admin-script.js"></script>
+    <script>
+        // Set current date
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-IN', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        
+        // Check if login required
+        if (window.location.search.includes('login')) {
+            showLoginForm();
+        }
+        
+        function showLoginForm() {
+            const html = `
+                <div class="modal">
+                    <div class="modal-content" style="max-width: 400px;">
+                        <h3 style="color: #ff4081; margin-bottom: 20px;">Admin Login</h3>
+                        <div class="form-group">
+                            <label>Username:</label>
+                            <input type="text" id="login-username" class="form-control" placeholder="Enter username">
+                        </div>
+                        <div class="form-group">
+                            <label>Password:</label>
+                            <input type="password" id="login-password" class="form-control" placeholder="Enter password">
+                        </div>
+                        <div style="margin-top: 20px; display: flex; gap: 10px;">
+                            <button onclick="attemptLogin()" class="btn btn-primary" style="flex: 1;">Login</button>
+                            <button onclick="window.location.href='index.html'" class="btn btn-outline">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', html);
+        }
+        
+        function attemptLogin() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (username === 'admin' && password === 'matka123') {
+                localStorage.setItem('adminLoggedIn', 'true');
+                window.location.href = 'admin.html';
+            } else {
+                alert('Invalid credentials! Try admin / matka123');
+            }
+        }
+        
+        function sendTestNotification() {
+            alert('Test notification sent to all users!');
+        }
+        
+        function backupData() {
+            const results = localStorage.getItem('matkaResults');
+            const guessers = localStorage.getItem('matkaGuessers');
+            
+            const data = {
+                results: JSON.parse(results || '{}'),
+                guessers: JSON.parse(guessers || '[]'),
+                backupTime: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `matka-backup-${new Date().getTime()}.json`;
+            a.click();
+            
+            alert('Backup created successfully!');
+        }
+    </script>
 </body>
 </html>
