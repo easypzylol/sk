@@ -85,8 +85,8 @@
                         <input type="text" id="gameTime" class="form-control" placeholder="HH:MM">
                     </div>
                     <div class="form-group">
-                        <label>Today's Result (3 numbers, 00-99)</label>
-                        <input type="text" id="gameResult" class="form-control" placeholder="e.g., 25,47,89">
+                        <label>Yesterday's Result (00-99)</label>
+                        <input type="number" id="gameYesterday" class="form-control" placeholder="e.g., 70" min="0" max="99">
                     </div>
                     <button onclick="updateGame()" class="btn btn-primary" style="width: 100%;">
                         <i class="fas fa-save"></i> Update Game
@@ -230,8 +230,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Result Numbers (3 numbers)</label>
-                        <input type="text" id="resultNumbers" class="form-control" placeholder="e.g., 25,47,89">
+                        <label>Result Number (00-99)</label>
+                        <input type="number" id="resultNumber" class="form-control" placeholder="e.g., 34" min="0" max="99">
                     </div>
                     <button onclick="saveHistoricalResult()" class="btn btn-primary" style="width: 100%;">
                         <i class="fas fa-save"></i> Save Historical Result
@@ -249,6 +249,9 @@
             <div class="admin-card" style="margin-top: 30px;">
                 <h3><i class="fas fa-sliders-h"></i> System Controls</h3>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <a href="manage-results.html" class="btn btn-primary">
+                        <i class="fas fa-flag-checkered"></i> Manage Results
+                    </a>
                     <button onclick="clearAllData()" class="btn btn-danger">
                         <i class="fas fa-trash"></i> Clear All Data
                     </button>
