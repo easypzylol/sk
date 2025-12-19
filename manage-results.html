@@ -13,234 +13,292 @@
         <i class="fas fa-bars"></i>
     </button>
 
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
+    <div class="mobile-menu">
+        <div class="mobile-menu-header">
+            <h3><i class="fas fa-bars"></i> Admin Menu</h3>
+            <button class="mobile-menu-close" onclick="toggleMobileMenu()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mobile-menu-content">
+            <a href="admin-dashboard.html" class="mobile-menu-item">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="manage-results.html" class="mobile-menu-item active">
+                <i class="fas fa-flag-checkered"></i> Manage Results
+            </a>
+            <a href="manage-users.html" class="mobile-menu-item">
+                <i class="fas fa-users"></i> Manage Users
+            </a>
+            <a href="manage-predictions.html" class="mobile-menu-item">
+                <i class="fas fa-bullseye"></i> Manage Predictions
+            </a>
+            <a href="#" class="mobile-menu-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+
     <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="logo">
                 <h1>MATKA KING</h1>
-                <p>Results Management System</p>
+                <p>Results Management</p>
             </div>
             <div class="header-buttons">
-                <a href="index.html" class="btn btn-outline"><i class="fas fa-home"></i> Home</a>
-                <a href="admin.html" class="btn btn-danger"><i class="fas fa-lock"></i> Admin Panel</a>
+                <button onclick="logout()" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
             </div>
         </div>
     </header>
 
+    <!-- Admin Navigation -->
+    <nav class="admin-nav container">
+        <a href="admin-dashboard.html">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        <a href="manage-results.html" class="active">
+            <i class="fas fa-flag-checkered"></i> Manage Results
+        </a>
+        <a href="manage-users.html">
+            <i class="fas fa-users"></i> Manage Users
+        </a>
+        <a href="manage-predictions.html">
+            <i class="fas fa-bullseye"></i> Manage Predictions
+        </a>
+        <a href="index.html">
+            <i class="fas fa-home"></i> View Site
+        </a>
+    </nav>
+
     <!-- Main Content -->
-    <main class="container">
-        <div class="admin-panel">
-            <!-- Page Header -->
-            <div class="admin-header">
-                <h1><i class="fas fa-edit"></i> MANAGE RESULTS</h1>
-                <p>Update and publish results for all 6 markets</p>
-            </div>
+    <main class="container dashboard-container">
+        <div class="dashboard-header">
+            <h1><i class="fas fa-flag-checkered"></i> RESULTS MANAGEMENT</h1>
+            <p>Update today's results and edit historical results</p>
+        </div>
 
-            <!-- Quick Stats -->
-            <div class="admin-card">
-                <h3><i class="fas fa-chart-bar"></i> TODAY'S OVERVIEW</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 15px;">
-                    <div style="text-align: center; padding: 15px; background: rgba(0, 230, 118, 0.1); border-radius: 5px;">
-                        <div style="font-size: 1.5rem; font-weight: bold; color: #00e676;">2</div>
-                        <div style="font-size: 0.9rem; color: #a0a0c0;">Published</div>
+        <!-- Today's Results -->
+        <div class="dashboard-card">
+            <h3><i class="fas fa-calendar-day"></i> TODAY'S RESULTS (<span id="today-date"></span>)</h3>
+            <div class="results-form-grid">
+                <!-- Faridabad -->
+                <div class="result-set-card">
+                    <h4>FARIDABAD (5:15 PM)</h4>
+                    <div class="form-group">
+                        <label>Result Number:</label>
+                        <input type="text" id="result-faridabad" class="form-control" maxlength="2" 
+                               placeholder="00-99" value="">
                     </div>
-                    <div style="text-align: center; padding: 15px; background: rgba(255, 152, 0, 0.1); border-radius: 5px;">
-                        <div style="font-size: 1.5rem; font-weight: bold; color: #ff9800;">3</div>
-                        <div style="font-size: 0.9rem; color: #a0a0c0;">Ready</div>
+                    <div class="form-group">
+                        <label>Status:</label>
+                        <select id="status-faridabad" class="form-control">
+                            <option value="pending">Pending</option>
+                            <option value="published">Published</option>
+                        </select>
                     </div>
-                    <div style="text-align: center; padding: 15px; background: rgba(158, 158, 158, 0.1); border-radius: 5px;">
-                        <div style="font-size: 1.5rem; font-weight: bold; color: #9e9e9e;">1</div>
-                        <div style="font-size: 0.9rem; color: #a0a0c0;">Pending</div>
-                    </div>
-                    <div style="text-align: center; padding: 15px; background: rgba(33, 150, 243, 0.1); border-radius: 5px;">
-                        <div style="font-size: 1.5rem; font-weight: bold; color: #2196f3;">6</div>
-                        <div style="font-size: 0.9rem; color: #a0a0c0;">Total</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Results Update Form -->
-            <div class="admin-card">
-                <h3><i class="fas fa-flag-checkered"></i> UPDATE RESULTS</h3>
-                
-                <div class="date-selector" style="margin-bottom: 20px;">
-                    <button class="date-btn active">Today</button>
-                    <button class="date-btn">Yesterday</button>
-                    <button class="date-btn">Previous 7 Days</button>
-                    <button class="date-btn">Custom Date</button>
-                </div>
-                
-                <div class="results-form-grid">
-                    <!-- Faridabad -->
-                    <div class="result-set-card">
-                        <h4>FARIDABAD</h4>
-                        <div class="form-group">
-                            <label>Result:</label>
-                            <input type="text" class="form-control" id="update-faridabad" 
-                                   placeholder="00-99" maxlength="2" pattern="[0-9]{2}">
-                        </div>
-                        <div class="form-group">
-                            <label>Status:</label>
-                            <select class="form-control" id="status-faridabad">
-                                <option value="pending">Pending</option>
-                                <option value="ready">Ready</option>
-                                <option value="published">Published</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-success btn-block" onclick="updateResult('faridabad')">
-                            <i class="fas fa-check"></i> Update
-                        </button>
-                    </div>
-                    
-                    <!-- Gaziabad -->
-                    <div class="result-set-card">
-                        <h4>GAZIABAD</h4>
-                        <div class="form-group">
-                            <label>Result:</label>
-                            <input type="text" class="form-control" id="update-gaziabad" 
-                                   placeholder="00-99" maxlength="2" pattern="[0-9]{2}">
-                        </div>
-                        <div class="form-group">
-                            <label>Status:</label>
-                            <select class="form-control" id="status-gaziabad">
-                                <option value="pending">Pending</option>
-                                <option value="ready">Ready</option>
-                                <option value="published">Published</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-success btn-block" onclick="updateResult('gaziabad')">
-                            <i class="fas fa-check"></i> Update
-                        </button>
-                    </div>
-                    
-                    <!-- Gali -->
-                    <div class="result-set-card">
-                        <h4>GALI</h4>
-                        <div class="form-group">
-                            <label>Result:</label>
-                            <input type="text" class="form-control" id="update-gali" 
-                                   placeholder="00-99" maxlength="2" pattern="[0-9]{2}">
-                        </div>
-                        <div class="form-group">
-                            <label>Status:</label>
-                            <select class="form-control" id="status-gali">
-                                <option value="pending">Pending</option>
-                                <option value="ready">Ready</option>
-                                <option value="published">Published</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-success btn-block" onclick="updateResult('gali')">
-                            <i class="fas fa-check"></i> Update
-                        </button>
-                    </div>
-                    
-                    <!-- Deshwar -->
-                    <div class="result-set-card">
-                        <h4>DESHWAR</h4>
-                        <div class="form-group">
-                            <label>Result:</label>
-                            <input type="text" class="form-control" id="update-deshwar" 
-                                   placeholder="00-99" maxlength="2" pattern="[0-9]{2}">
-                        </div>
-                        <div class="form-group">
-                            <label>Status:</label>
-                            <select class="form-control" id="status-deshwar">
-                                <option value="pending">Pending</option>
-                                <option value="ready">Ready</option>
-                                <option value="published">Published</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-success btn-block" onclick="updateResult('deshwar')">
-                            <i class="fas fa-check"></i> Update
-                        </button>
-                    </div>
-                    
-                    <!-- Gali Dubai -->
-                    <div class="result-set-card">
-                        <h4>GALI DUBAI</h4>
-                        <div class="form-group">
-                            <label>Result:</label>
-                            <input type="text" class="form-control" id="update-gali-dubai" 
-                                   placeholder="00-99" maxlength="2" pattern="[0-9]{2}">
-                        </div>
-                        <div class="form-group">
-                            <label>Status:</label>
-                            <select class="form-control" id="status-gali-dubai">
-                                <option value="pending">Pending</option>
-                                <option value="ready">Ready</option>
-                                <option value="published">Published</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-success btn-block" onclick="updateResult('gali_dubai')">
-                            <i class="fas fa-check"></i> Update
-                        </button>
-                    </div>
-                    
-                    <!-- Deshwar Dubai -->
-                    <div class="result-set-card">
-                        <h4>DESHWAR DUBAI</h4>
-                        <div class="form-group">
-                            <label>Result:</label>
-                            <input type="text" class="form-control" id="update-deshwar-dubai" 
-                                   placeholder="00-99" maxlength="2" pattern="[0-9]{2}">
-                        </div>
-                        <div class="form-group">
-                            <label>Status:</label>
-                            <select class="form-control" id="status-deshwar-dubai">
-                                <option value="pending">Pending</option>
-                                <option value="ready">Ready</option>
-                                <option value="published">Published</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-success btn-block" onclick="updateResult('deshwar_dubai')">
-                            <i class="fas fa-check"></i> Update
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Bulk Actions -->
-                <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1);">
-                    <h4><i class="fas fa-bolt"></i> BULK ACTIONS</h4>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
-                        <button class="btn btn-primary" onclick="saveAllResults()">
-                            <i class="fas fa-save"></i> Save All Changes
-                        </button>
-                        <button class="btn btn-success" onclick="publishAllReady()">
-                            <i class="fas fa-broadcast-tower"></i> Publish All Ready
-                        </button>
-                        <button class="btn btn-danger" onclick="clearAllResults()">
-                            <i class="fas fa-trash"></i> Clear All
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Results History -->
-            <div class="admin-card">
-                <h3><i class="fas fa-history"></i> RECENT RESULTS HISTORY</h3>
-                
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Market</th>
-                                <th>Result</th>
-                                <th>Status</th>
-                                <th>Published Time</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="results-history-table">
-                            <!-- Results will be loaded here -->
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div style="margin-top: 15px; text-align: center;">
-                    <button class="btn btn-outline" onclick="loadMoreHistory()">
-                        <i class="fas fa-sync"></i> Load More
+                    <button class="btn btn-success btn-block" onclick="updateResult('faridabad')">
+                        <i class="fas fa-save"></i> Update
                     </button>
+                    <div id="status-display-faridabad" class="status-badge unpublished" style="margin-top: 10px;">
+                        Not Set
+                    </div>
+                </div>
+                
+                <!-- Gaziabad -->
+                <div class="result-set-card">
+                    <h4>GAZIABAD (9:15 PM)</h4>
+                    <div class="form-group">
+                        <label>Result Number:</label>
+                        <input type="text" id="result-gaziabad" class="form-control" maxlength="2" 
+                               placeholder="00-99" value="">
+                    </div>
+                    <div class="form-group">
+                        <label>Status:</label>
+                        <select id="status-gaziabad" class="form-control">
+                            <option value="pending">Pending</option>
+                            <option value="published">Published</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success btn-block" onclick="updateResult('gaziabad')">
+                        <i class="fas fa-save"></i> Update
+                    </button>
+                    <div id="status-display-gaziabad" class="status-badge unpublished" style="margin-top: 10px;">
+                        Not Set
+                    </div>
+                </div>
+                
+                <!-- Gali -->
+                <div class="result-set-card">
+                    <h4>GALI (10:30 PM)</h4>
+                    <div class="form-group">
+                        <label>Result Number:</label>
+                        <input type="text" id="result-gali" class="form-control" maxlength="2" 
+                               placeholder="00-99" value="">
+                    </div>
+                    <div class="form-group">
+                        <label>Status:</label>
+                        <select id="status-gali" class="form-control">
+                            <option value="pending">Pending</option>
+                            <option value="published">Published</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success btn-block" onclick="updateResult('gali')">
+                        <i class="fas fa-save"></i> Update
+                    </button>
+                    <div id="status-display-gali" class="status-badge unpublished" style="margin-top: 10px;">
+                        Not Set
+                    </div>
+                </div>
+                
+                <!-- Deshwar -->
+                <div class="result-set-card">
+                    <h4>DESHWAR (4:45 PM)</h4>
+                    <div class="form-group">
+                        <label>Result Number:</label>
+                        <input type="text" id="result-deshwar" class="form-control" maxlength="2" 
+                               placeholder="00-99" value="">
+                    </div>
+                    <div class="form-group">
+                        <label>Status:</label>
+                        <select id="status-deshwar" class="form-control">
+                            <option value="pending">Pending</option>
+                            <option value="published">Published</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success btn-block" onclick="updateResult('deshwar')">
+                        <i class="fas fa-save"></i> Update
+                    </button>
+                    <div id="status-display-deshwar" class="status-badge unpublished" style="margin-top: 10px;">
+                        Not Set
+                    </div>
+                </div>
+                
+                <!-- Gali Dubai -->
+                <div class="result-set-card">
+                    <h4>GALI DUBAI (2:30 PM)</h4>
+                    <div class="form-group">
+                        <label>Result Number:</label>
+                        <input type="text" id="result-gali-dubai" class="form-control" maxlength="2" 
+                               placeholder="00-99" value="">
+                    </div>
+                    <div class="form-group">
+                        <label>Status:</label>
+                        <select id="status-gali-dubai" class="form-control">
+                            <option value="pending">Pending</option>
+                            <option value="published">Published</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success btn-block" onclick="updateResult('gali_dubai')">
+                        <i class="fas fa-save"></i> Update
+                    </button>
+                    <div id="status-display-gali_dubai" class="status-badge unpublished" style="margin-top: 10px;">
+                        Not Set
+                    </div>
+                </div>
+                
+                <!-- Deshwar Dubai -->
+                <div class="result-set-card">
+                    <h4>DESHWAR DUBAI (11:45 PM)</h4>
+                    <div class="form-group">
+                        <label>Result Number:</label>
+                        <input type="text" id="result-deshwar-dubai" class="form-control" maxlength="2" 
+                               placeholder="00-99" value="">
+                    </div>
+                    <div class="form-group">
+                        <label>Status:</label>
+                        <select id="status-deshwar-dubai" class="form-control">
+                            <option value="pending">Pending</option>
+                            <option value="published">Published</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-success btn-block" onclick="updateResult('deshwar_dubai')">
+                        <i class="fas fa-save"></i> Update
+                    </button>
+                    <div id="status-display-deshwar_dubai" class="status-badge unpublished" style="margin-top: 10px;">
+                        Not Set
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bulk Actions -->
+            <div style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="btn btn-primary" onclick="saveAllResults()">
+                    <i class="fas fa-save"></i> Save All
+                </button>
+                <button class="btn btn-success" onclick="publishAllResults()">
+                    <i class="fas fa-broadcast-tower"></i> Publish All
+                </button>
+                <button class="btn btn-danger" onclick="clearTodayResults()">
+                    <i class="fas fa-trash"></i> Clear All
+                </button>
+                <button class="btn btn-info" onclick="generateRandomResults()">
+                    <i class="fas fa-random"></i> Generate Random
+                </button>
+            </div>
+        </div>
+
+        <!-- Historical Results -->
+        <div class="dashboard-card">
+            <h3><i class="fas fa-history"></i> HISTORICAL RESULTS</h3>
+            <div style="margin-top: 15px;">
+                <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                    <input type="date" id="history-date" class="form-control" style="max-width: 200px;">
+                    <button class="btn btn-primary" onclick="loadHistoricalResults()">
+                        <i class="fas fa-search"></i> Load Date
+                    </button>
+                    <button class="btn btn-info" onclick="loadPreviousDay()">
+                        <i class="fas fa-arrow-left"></i> Previous Day
+                    </button>
+                    <button class="btn btn-info" onclick="loadNextDay()">
+                        <i class="fas fa-arrow-right"></i> Next Day
+                    </button>
+                    <button class="btn btn-success" onclick="generateMonthResults()">
+                        <i class="fas fa-calendar"></i> Generate Month
+                    </button>
+                </div>
+                
+                <div id="historical-results-container">
+                    <p style="color: #a0a0c0; text-align: center;">Select a date to view historical results</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Date Selector -->
+        <div class="dashboard-card">
+            <h3><i class="fas fa-calendar-alt"></i> QUICK DATE SELECTOR</h3>
+            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn btn-outline" onclick="setDateOffset(-1)">Yesterday</button>
+                <button class="btn btn-outline" onclick="setDateOffset(-2)">2 Days Ago</button>
+                <button class="btn btn-outline" onclick="setDateOffset(-7)">Last Week</button>
+                <button class="btn btn-outline" onclick="setDateOffset(-30)">Last Month</button>
+                <button class="btn btn-outline" onclick="setDateOffset(-90)">3 Months Ago</button>
+            </div>
+        </div>
+
+        <!-- Results Statistics -->
+        <div class="dashboard-card">
+            <h3><i class="fas fa-chart-bar"></i> RESULTS STATISTICS</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-top: 15px;">
+                <div style="text-align: center; padding: 15px; background: rgba(33, 150, 243, 0.1); border-radius: 5px;">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #2196f3;" id="stats-total">0</div>
+                    <div style="font-size: 0.9rem; color: #a0a0c0;">Total Days</div>
+                </div>
+                <div style="text-align: center; padding: 15px; background: rgba(0, 230, 118, 0.1); border-radius: 5px;">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #00e676;" id="stats-complete">0</div>
+                    <div style="font-size: 0.9rem; color: #a0a0c0;">Complete Days</div>
+                </div>
+                <div style="text-align: center; padding: 15px; background: rgba(255, 152, 0, 0.1); border-radius: 5px;">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #ff9800;" id="stats-pending">0</div>
+                    <div style="font-size: 0.9rem; color: #a0a0c0;">Pending Days</div>
+                </div>
+                <div style="text-align: center; padding: 15px; background: rgba(245, 0, 87, 0.1); border-radius: 5px;">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #ff4081;" id="stats-empty">0</div>
+                    <div style="font-size: 0.9rem; color: #a0a0c0;">Empty Days</div>
                 </div>
             </div>
         </div>
@@ -252,17 +310,8 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h4>RESULTS MANAGEMENT</h4>
-                    <p>Admin panel for managing Matka results</p>
-                    <p>© 2024 Matka King. All rights reserved.</p>
-                </div>
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="index.html">Home Page</a></li>
-                        <li><a href="admin.html">Admin Panel</a></li>
-                        <li><a href="results-history.html">Results History</a></li>
-                        <li><a href="guesser.html">Guesser Panel</a></li>
-                    </ul>
+                    <p>Manage today's and historical results</p>
+                    <p>© 2024 Matka King. Admin Access Only.</p>
                 </div>
             </div>
         </div>
@@ -270,55 +319,88 @@
 
     <script src="mobile-menu.js"></script>
     <script>
-        // Initialize page
+        // Check admin login
         document.addEventListener('DOMContentLoaded', function() {
-            loadCurrentResults();
-            loadResultsHistory();
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
             
-            // Check admin access
-            const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
-            if (!isLoggedIn) {
-                window.location.href = 'admin.html?login';
+            if (currentUser.type !== 'admin') {
+                alert('Admin access required!');
+                window.location.href = 'login.html';
+                return;
             }
+            
+            // Set today's date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('today-date').textContent = formatDate(today);
+            document.getElementById('history-date').value = today;
+            
+            // Load today's results
+            loadTodayResults();
+            
+            // Load statistics
+            loadStatistics();
+            
+            // Log activity
+            logActivity('Accessed results management');
         });
         
-        // Load current results into form
-        function loadCurrentResults() {
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-IN', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+        
+        function loadTodayResults() {
+            const today = new Date().toISOString().split('T')[0];
             const results = JSON.parse(localStorage.getItem('matkaResults') || '{}');
+            const todayResults = results[today] || {};
             
             const games = [
-                { key: 'faridabad', inputId: 'update-faridabad', statusId: 'status-faridabad' },
-                { key: 'gaziabad', inputId: 'update-gaziabad', statusId: 'status-gaziabad' },
-                { key: 'gali', inputId: 'update-gali', statusId: 'status-gali' },
-                { key: 'deshwar', inputId: 'update-deshwar', statusId: 'status-deshwar' },
-                { key: 'gali_dubai', inputId: 'update-gali-dubai', statusId: 'status-gali-dubai' },
-                { key: 'deshwar_dubai', inputId: 'update-deshwar-dubai', statusId: 'status-deshwar-dubai' }
+                { key: 'faridabad', inputId: 'result-faridabad', statusId: 'status-faridabad', displayId: 'status-display-faridabad' },
+                { key: 'gaziabad', inputId: 'result-gaziabad', statusId: 'status-gaziabad', displayId: 'status-display-gaziabad' },
+                { key: 'gali', inputId: 'result-gali', statusId: 'status-gali', displayId: 'status-display-gali' },
+                { key: 'deshwar', inputId: 'result-deshwar', statusId: 'status-deshwar', displayId: 'status-display-deshwar' },
+                { key: 'gali_dubai', inputId: 'result-gali-dubai', statusId: 'status-gali-dubai', displayId: 'status-display-gali_dubai' },
+                { key: 'deshwar_dubai', inputId: 'result-deshwar-dubai', statusId: 'status-deshwar-dubai', displayId: 'status-display-deshwar_dubai' }
             ];
             
             games.forEach(game => {
-                const resultData = results[game.key];
+                const result = todayResults[game.key];
                 const input = document.getElementById(game.inputId);
-                const select = document.getElementById(game.statusId);
+                const statusSelect = document.getElementById(game.statusId);
+                const display = document.getElementById(game.displayId);
                 
-                if (resultData && resultData.result) {
-                    input.value = resultData.result;
+                if (result) {
+                    input.value = result.result || '';
+                    statusSelect.value = result.published ? 'published' : 'pending';
                     
-                    if (resultData.published) {
-                        select.value = 'published';
+                    if (result.published) {
+                        display.textContent = `Published at ${result.time}`;
+                        display.className = 'status-badge published';
+                    } else if (result.result) {
+                        display.textContent = 'Ready to publish';
+                        display.className = 'status-badge ready';
                     } else {
-                        select.value = 'ready';
+                        display.textContent = 'Not set';
+                        display.className = 'status-badge unpublished';
                     }
                 } else {
                     input.value = '';
-                    select.value = 'pending';
+                    statusSelect.value = 'pending';
+                    display.textContent = 'Not set';
+                    display.className = 'status-badge unpublished';
                 }
             });
         }
         
-        // Update single result
         function updateResult(gameKey) {
-            const inputId = `update-${gameKey.replace('_', '-')}`;
-            const statusId = `status-${gameKey.replace('_', '-')}`;
+            const inputId = gameKey.includes('_') ? `result-${gameKey.replace('_', '-')}` : `result-${gameKey}`;
+            const statusId = gameKey.includes('_') ? `status-${gameKey.replace('_', '-')}` : `status-${gameKey}`;
+            const displayId = `status-display-${gameKey}`;
             
             const result = document.getElementById(inputId).value.trim();
             const status = document.getElementById(statusId).value;
@@ -328,208 +410,350 @@
                 return;
             }
             
+            const today = new Date().toISOString().split('T')[0];
             let results = JSON.parse(localStorage.getItem('matkaResults') || '{}');
-            const now = new Date();
+            
+            if (!results[today]) results[today] = {};
             
             if (result) {
-                results[gameKey] = {
+                results[today][gameKey] = {
                     result: result,
-                    time: now.toLocaleTimeString('en-IN', { 
+                    published: status === 'published',
+                    time: new Date().toLocaleTimeString('en-IN', { 
                         hour: '2-digit', 
                         minute: '2-digit',
                         hour12: true 
                     }),
-                    published: status === 'published',
-                    publishTime: status === 'published' ? now.toLocaleTimeString('en-IN', { 
-                        hour: '2-digit', 
-                        minute: '2-digit',
-                        hour12: true 
-                    }) : null
+                    publishTime: status === 'published' ? new Date().toLocaleTimeString() : null
                 };
-            } else if (results[gameKey]) {
-                results[gameKey].published = status === 'published';
+            } else if (results[today][gameKey]) {
+                // Keep existing result but update status
+                results[today][gameKey].published = status === 'published';
+            } else {
+                // Remove if empty
+                delete results[today][gameKey];
             }
             
             localStorage.setItem('matkaResults', JSON.stringify(results));
             
-            showNotification(`${gameKey.toUpperCase()} result ${result ? 'updated' : 'status changed'}!`, 'success');
-            loadResultsHistory();
+            // Update display
+            const display = document.getElementById(displayId);
+            if (result) {
+                if (status === 'published') {
+                    display.textContent = `Published at ${results[today][gameKey].time}`;
+                    display.className = 'status-badge published';
+                } else {
+                    display.textContent = 'Ready to publish';
+                    display.className = 'status-badge ready';
+                }
+            } else {
+                display.textContent = 'Not set';
+                display.className = 'status-badge unpublished';
+            }
+            
+            logActivity(`Updated ${gameKey} result: ${result || 'cleared'}`);
         }
         
-        // Save all results
         function saveAllResults() {
             const games = ['faridabad', 'gaziabad', 'gali', 'deshwar', 'gali_dubai', 'deshwar_dubai'];
             let hasErrors = false;
             
-            games.forEach(gameKey => {
-                const inputId = `update-${gameKey.replace('_', '-')}`;
+            games.forEach(game => {
+                const inputId = game.includes('_') ? `result-${game.replace('_', '-')}` : `result-${game}`;
                 const input = document.getElementById(inputId);
                 const result = input.value.trim();
                 
                 if (result && !/^\d{2}$/.test(result)) {
-                    alert(`Invalid result for ${gameKey.toUpperCase()}: Must be 2 digits (00-99)`);
+                    alert(`Invalid result for ${game.toUpperCase()}: Must be 2 digits (00-99)`);
                     hasErrors = true;
                 }
             });
             
             if (hasErrors) return;
             
-            games.forEach(gameKey => updateResult(gameKey));
-            showNotification('All results saved successfully!', 'success');
+            games.forEach(game => updateResult(game));
+            alert('All results saved successfully!');
         }
         
-        // Publish all ready results
-        function publishAllReady() {
+        function publishAllResults() {
+            const today = new Date().toISOString().split('T')[0];
             let results = JSON.parse(localStorage.getItem('matkaResults') || '{}');
-            const now = new Date();
-            let publishedCount = 0;
             
-            Object.keys(results).forEach(key => {
-                if (results[key].result && !results[key].published) {
-                    results[key].published = true;
-                    results[key].publishTime = now.toLocaleTimeString('en-IN', { 
-                        hour: '2-digit', 
-                        minute: '2-digit',
-                        hour12: true 
-                    });
-                    publishedCount++;
+            if (!results[today]) {
+                alert('No results to publish!');
+                return;
+            }
+            
+            Object.keys(results[today]).forEach(game => {
+                if (results[today][game].result) {
+                    results[today][game].published = true;
+                    results[today][game].publishTime = new Date().toLocaleTimeString();
                 }
             });
             
             localStorage.setItem('matkaResults', JSON.stringify(results));
+            loadTodayResults();
             
-            // Update form
-            loadCurrentResults();
-            
-            showNotification(`${publishedCount} results published successfully!`, 'success');
-            loadResultsHistory();
+            logActivity('Published all results');
+            alert('All results published successfully!');
         }
         
-        // Clear all results
-        function clearAllResults() {
-            if (confirm('Are you sure you want to clear ALL results? This cannot be undone.')) {
-                localStorage.removeItem('matkaResults');
-                loadCurrentResults();
-                showNotification('All results cleared!', 'info');
-                loadResultsHistory();
-            }
+        function clearTodayResults() {
+            if (!confirm('Clear all today\'s results?')) return;
+            
+            const today = new Date().toISOString().split('T')[0];
+            let results = JSON.parse(localStorage.getItem('matkaResults') || '{}');
+            
+            delete results[today];
+            localStorage.setItem('matkaResults', JSON.stringify(results));
+            loadTodayResults();
+            
+            logActivity('Cleared all today\'s results');
+            alert('Today\'s results cleared!');
         }
         
-        // Load results history
-        function loadResultsHistory() {
+        function generateRandomResults() {
+            if (!confirm('Generate random results for all games?')) return;
+            
+            const games = ['faridabad', 'gaziabad', 'gali', 'deshwar', 'gali_dubai', 'deshwar_dubai'];
+            const today = new Date().toISOString().split('T')[0];
+            let results = JSON.parse(localStorage.getItem('matkaResults') || '{}');
+            
+            if (!results[today]) results[today] = {};
+            
+            games.forEach(game => {
+                results[today][game] = {
+                    result: Math.floor(Math.random() * 100).toString().padStart(2, '0'),
+                    published: false,
+                    time: new Date().toLocaleTimeString(),
+                    publishTime: null
+                };
+            });
+            
+            localStorage.setItem('matkaResults', JSON.stringify(results));
+            loadTodayResults();
+            
+            logActivity('Generated random results');
+            alert('Random results generated!');
+        }
+        
+        function loadHistoricalResults() {
+            const dateInput = document.getElementById('history-date').value;
+            if (!dateInput) return;
+            
             const results = JSON.parse(localStorage.getItem('matkaResults') || '{}');
-            const container = document.getElementById('results-history-table');
+            const dateResults = results[dateInput] || {};
+            const container = document.getElementById('historical-results-container');
             
-            if (!container) return;
+            const games = [
+                { key: 'faridabad', name: 'Faridabad' },
+                { key: 'gaziabad', name: 'Gaziabad' },
+                { key: 'gali', name: 'Gali' },
+                { key: 'deshwar', name: 'Deshwar' },
+                { key: 'gali_dubai', name: 'Gali Dubai' },
+                { key: 'deshwar_dubai', name: 'Deshwar Dubai' }
+            ];
             
-            const today = new Date().toLocaleDateString('en-IN');
+            let html = `
+                <h4 style="color: #ff9800; margin-bottom: 15px;">
+                    <i class="fas fa-calendar"></i> Results for ${formatDate(dateInput)}
+                </h4>
+                <div class="historical-results">
+            `;
             
-            let html = '';
-            Object.keys(results).forEach(key => {
-                const resultData = results[key];
-                if (resultData && resultData.result) {
-                    const gameName = key.replace('_', ' ').toUpperCase();
-                    
+            if (Object.keys(dateResults).length === 0) {
+                html += '<p style="color: #a0a0c0; text-align: center;">No results for this date</p>';
+            } else {
+                games.forEach(game => {
+                    const result = dateResults[game.key];
                     html += `
-                        <tr>
-                            <td>${today}</td>
-                            <td>${gameName}</td>
-                            <td><strong>${resultData.result}</strong></td>
-                            <td>
-                                ${resultData.published ? 
-                                    '<span class="active-status">Published</span>' : 
-                                    '<span class="pending-status">Ready</span>'
-                                }
-                            </td>
-                            <td>${resultData.publishTime || resultData.time || 'N/A'}</td>
-                            <td>
-                                <button class="btn btn-small btn-info" onclick="editResult('${key}')">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                            </td>
-                        </tr>
+                        <div class="historical-date">
+                            <h4>${game.name}</h4>
+                            <div class="date-results">
+                                <div class="date-result-item">
+                                    <strong>Result:</strong> ${result?.result || 'N/A'}
+                                </div>
+                                <div class="date-result-item">
+                                    <strong>Status:</strong> ${result?.published ? 'Published' : 'Not Published'}
+                                </div>
+                                <div class="date-result-item">
+                                    <strong>Time:</strong> ${result?.time || 'N/A'}
+                                </div>
+                                <div class="date-result-item">
+                                    <button class="btn btn-small btn-info" onclick="editHistoricalResult('${dateInput}', '${game.key}')">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     `;
+                });
+            }
+            
+            html += '</div>';
+            container.innerHTML = html;
+        }
+        
+        function editHistoricalResult(date, game) {
+            const results = JSON.parse(localStorage.getItem('matkaResults') || '{}');
+            const result = results[date]?.[game];
+            
+            const newResult = prompt(`Enter new result for ${game} on ${date}:`, result?.result || '');
+            if (newResult === null) return;
+            
+            if (newResult && !/^\d{2}$/.test(newResult)) {
+                alert('Please enter a valid 2-digit number!');
+                return;
+            }
+            
+            if (!results[date]) results[date] = {};
+            
+            if (newResult) {
+                results[date][game] = {
+                    result: newResult,
+                    published: result?.published || false,
+                    time: result?.time || new Date().toLocaleTimeString(),
+                    publishTime: result?.publishTime
+                };
+            } else {
+                delete results[date][game];
+                if (Object.keys(results[date]).length === 0) {
+                    delete results[date];
+                }
+            }
+            
+            localStorage.setItem('matkaResults', JSON.stringify(results));
+            loadHistoricalResults();
+            loadStatistics();
+            
+            logActivity(`Edited historical result: ${date} - ${game}`);
+            alert('Result updated successfully!');
+        }
+        
+        function loadPreviousDay() {
+            const currentDate = document.getElementById('history-date').value;
+            const date = new Date(currentDate);
+            date.setDate(date.getDate() - 1);
+            
+            const newDate = date.toISOString().split('T')[0];
+            document.getElementById('history-date').value = newDate;
+            loadHistoricalResults();
+        }
+        
+        function loadNextDay() {
+            const currentDate = document.getElementById('history-date').value;
+            const date = new Date(currentDate);
+            date.setDate(date.getDate() + 1);
+            
+            // Don't go beyond today
+            const today = new Date().toISOString().split('T')[0];
+            const newDate = date.toISOString().split('T')[0];
+            
+            if (newDate > today) {
+                alert('Cannot go beyond today!');
+                return;
+            }
+            
+            document.getElementById('history-date').value = newDate;
+            loadHistoricalResults();
+        }
+        
+        function setDateOffset(offset) {
+            const date = new Date();
+            date.setDate(date.getDate() + offset);
+            
+            const newDate = date.toISOString().split('T')[0];
+            document.getElementById('history-date').value = newDate;
+            loadHistoricalResults();
+        }
+        
+        function generateMonthResults() {
+            if (!confirm('Generate results for the past 30 days? This will create random results for missing days.')) return;
+            
+            const games = ['faridabad', 'gaziabad', 'gali', 'deshwar', 'gali_dubai', 'deshwar_dubai'];
+            let results = JSON.parse(localStorage.getItem('matkaResults') || '{}');
+            
+            const today = new Date();
+            let generatedCount = 0;
+            
+            for (let i = 30; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                
+                if (!results[dateStr]) {
+                    results[dateStr] = {};
+                    generatedCount++;
+                    
+                    games.forEach(game => {
+                        const hour = Math.floor(Math.random() * 12) + 12;
+                        const minute = Math.floor(Math.random() * 60);
+                        results[dateStr][game] = {
+                            result: Math.floor(Math.random() * 100).toString().padStart(2, '0'),
+                            published: true,
+                            time: `${hour}:${minute.toString().padStart(2, '0')} ${hour >= 12 ? 'PM' : 'AM'}`,
+                            publishTime: new Date(date.setHours(18, 0, 0, 0)).toLocaleTimeString()
+                        };
+                    });
+                }
+            }
+            
+            localStorage.setItem('matkaResults', JSON.stringify(results));
+            loadStatistics();
+            
+            logActivity(`Generated ${generatedCount} days of historical results`);
+            alert(`Generated ${generatedCount} days of historical results!`);
+        }
+        
+        function loadStatistics() {
+            const results = JSON.parse(localStorage.getItem('matkaResults') || '{}');
+            const dates = Object.keys(results);
+            
+            let totalDays = dates.length;
+            let completeDays = 0;
+            let pendingDays = 0;
+            let emptyDays = 0;
+            
+            dates.forEach(date => {
+                const dateResults = results[date];
+                const gameCount = Object.keys(dateResults).length;
+                
+                if (gameCount === 6) {
+                    completeDays++;
+                } else if (gameCount > 0) {
+                    pendingDays++;
+                } else {
+                    emptyDays++;
                 }
             });
             
-            container.innerHTML = html || '<tr><td colspan="6" style="text-align: center;">No results yet</td></tr>';
+            document.getElementById('stats-total').textContent = totalDays;
+            document.getElementById('stats-complete').textContent = completeDays;
+            document.getElementById('stats-pending').textContent = pendingDays;
+            document.getElementById('stats-empty').textContent = emptyDays;
         }
         
-        // Edit result
-        function editResult(gameKey) {
-            const inputId = `update-${gameKey.replace('_', '-')}`;
-            const input = document.getElementById(inputId);
+        function logActivity(action) {
+            const activity = JSON.parse(localStorage.getItem('adminActivity') || '[]');
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
             
-            if (input) {
-                input.scrollIntoView({ behavior: 'smooth' });
-                input.focus();
-                input.select();
+            activity.unshift({
+                user: currentUser.username || 'admin',
+                action: action,
+                time: new Date().toISOString()
+            });
+            
+            if (activity.length > 100) {
+                activity.length = 100;
             }
+            
+            localStorage.setItem('adminActivity', JSON.stringify(activity));
         }
         
-        // Load more history
-        function loadMoreHistory() {
-            // In a real app, this would load more from server
-            showNotification('Loading more history...', 'info');
-        }
-        
-        // Show notification
-        function showNotification(message, type = 'info') {
-            // Remove existing notifications
-            document.querySelectorAll('.notification').forEach(el => el.remove());
-            
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-                ${message}
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.style.animation = 'slideOut 0.3s ease';
-                    setTimeout(() => notification.remove(), 300);
-                }
-            }, 5000);
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
         }
     </script>
-    <script>
-    // Check login status
-    document.addEventListener('DOMContentLoaded', function() {
-        const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
-        
-        if (!isLoggedIn) {
-            // Redirect to admin login
-            window.location.href = 'admin.html';
-            return;
-        }
-        
-        // User is logged in, proceed with page functionality
-        loadCurrentResults();
-        loadResultsHistory();
-        
-        // Add logout functionality
-        const logoutBtn = document.createElement('button');
-        logoutBtn.className = 'btn btn-danger';
-        logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Logout';
-        logoutBtn.style.position = 'fixed';
-        logoutBtn.style.top = '20px';
-        logoutBtn.style.right = '20px';
-        logoutBtn.style.zIndex = '1000';
-        logoutBtn.onclick = function() {
-            if (confirm('Are you sure you want to logout?')) {
-                localStorage.removeItem('adminLoggedIn');
-                window.location.href = 'admin.html';
-            }
-        };
-        
-        document.body.appendChild(logoutBtn);
-    });
-    
-    // Rest of your manage-results functions remain the same...
-</script>
 </body>
 </html>
