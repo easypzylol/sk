@@ -32,8 +32,11 @@
             <a href="results-history.html" class="mobile-menu-item">
                 <i class="fas fa-history"></i> Results
             </a>
-            <a href="guesser.html" class="mobile-menu-item">
-                <i class="fas fa-users"></i> Guessers
+            <a href="login.html?type=guesser" class="mobile-menu-item">
+                <i class="fas fa-users"></i> Guesser Login
+            </a>
+            <a href="login.html?type=premium" class="mobile-menu-item">
+                <i class="fas fa-crown"></i> Premium Login
             </a>
             <a href="#khaiwal" class="mobile-menu-item" onclick="toggleMobileMenu(); scrollToSection('khaiwal')">
                 <i class="fas fa-gamepad"></i> Khaiwal
@@ -41,14 +44,8 @@
             <a href="#contact" class="mobile-menu-item" onclick="toggleMobileMenu(); scrollToSection('contact')">
                 <i class="fas fa-phone-alt"></i> Contact
             </a>
-            <a href="user-dashboard.html" class="mobile-menu-item">
-                <i class="fas fa-user"></i> Dashboard
-            </a>
-            <a href="admin.html" class="mobile-menu-item admin-only">
-                <i class="fas fa-lock"></i> Admin Panel
-            </a>
-            <a href="manage-results.html" class="mobile-menu-item admin-only">
-                <i class="fas fa-flag-checkered"></i> Manage Results
+            <a href="login.html" class="mobile-menu-item">
+                <i class="fas fa-user"></i> User Login
             </a>
         </div>
         <div class="mobile-menu-footer">
@@ -68,8 +65,8 @@
                 <p>Faridabad | Gaziabad | Gali | Deshwar | Gali Dubai | Deshwar Dubai</p>
             </div>
             <div class="header-buttons">
-                <a href="user-dashboard.html" class="btn btn-outline"><i class="fas fa-user"></i> Dashboard</a>
-                <a href="#premium" class="btn btn-premium"><i class="fas fa-crown"></i> Premium</a>
+                <a href="login.html" class="btn btn-outline"><i class="fas fa-user"></i> Login</a>
+                <a href="login.html?type=premium" class="btn btn-premium"><i class="fas fa-crown"></i> Premium</a>
             </div>
         </div>
     </header>
@@ -80,10 +77,10 @@
             <ul class="nav-links">
                 <li><a href="index.html" class="active"><i class="fas fa-home"></i> Home</a></li>
                 <li><a href="results-history.html"><i class="fas fa-history"></i> Results</a></li>
-                <li><a href="#charts"><i class="fas fa-chart-line"></i> Charts</a></li>
-                <li><a href="guesser.html"><i class="fas fa-users"></i> Guessers</a></li>
+                <li><a href="login.html?type=guesser"><i class="fas fa-users"></i> Guessers</a></li>
                 <li><a href="#khaiwal"><i class="fas fa-gamepad"></i> Khaiwal</a></li>
                 <li><a href="#contact"><i class="fas fa-phone-alt"></i> Contact</a></li>
+                <li><a href="login.html?type=premium"><i class="fas fa-crown"></i> Premium</a></li>
             </ul>
         </div>
     </nav>
@@ -124,7 +121,7 @@
                                 <div class="result-status" id="status-1">Waiting for result</div>
                             </div>
                             <div class="game-stats">
-                                <div class="stat">Yesterday: <span id="yesterday-1">70</span></div>
+                                <div class="stat">Yesterday: <span id="yesterday-1">--</span></div>
                                 <div class="stat">Today: <span id="today-1">--</span></div>
                             </div>
                             <div class="game-actions">
@@ -144,7 +141,7 @@
                                 <div class="result-status" id="status-2">Game starts at 9:15 PM</div>
                             </div>
                             <div class="game-stats">
-                                <div class="stat">Yesterday: <span id="yesterday-2">70</span></div>
+                                <div class="stat">Yesterday: <span id="yesterday-2">--</span></div>
                                 <div class="stat">Today: <span id="today-2">--</span></div>
                             </div>
                             <div class="game-actions">
@@ -164,7 +161,7 @@
                                 <div class="result-status" id="status-3">Game starts at 10:30 PM</div>
                             </div>
                             <div class="game-stats">
-                                <div class="stat">Yesterday: <span id="yesterday-3">20</span></div>
+                                <div class="stat">Yesterday: <span id="yesterday-3">--</span></div>
                                 <div class="stat">Today: <span id="today-3">--</span></div>
                             </div>
                             <div class="game-actions">
@@ -184,7 +181,7 @@
                                 <div class="result-status" id="status-4">Game starts at 4:45 PM</div>
                             </div>
                             <div class="game-stats">
-                                <div class="stat">Yesterday: <span id="yesterday-4">25</span></div>
+                                <div class="stat">Yesterday: <span id="yesterday-4">--</span></div>
                                 <div class="stat">Today: <span id="today-4">--</span></div>
                             </div>
                             <div class="game-actions">
@@ -204,7 +201,7 @@
                                 <div class="result-status" id="status-5">Game starts at 2:30 PM</div>
                             </div>
                             <div class="game-stats">
-                                <div class="stat">Yesterday: <span id="yesterday-5">30</span></div>
+                                <div class="stat">Yesterday: <span id="yesterday-5">--</span></div>
                                 <div class="stat">Today: <span id="today-5">--</span></div>
                             </div>
                             <div class="game-actions">
@@ -224,7 +221,7 @@
                                 <div class="result-status" id="status-6">Game starts at 11:45 PM</div>
                             </div>
                             <div class="game-stats">
-                                <div class="stat">Yesterday: <span id="yesterday-6">35</span></div>
+                                <div class="stat">Yesterday: <span id="yesterday-6">--</span></div>
                                 <div class="stat">Today: <span id="today-6">--</span></div>
                             </div>
                             <div class="game-actions">
@@ -277,7 +274,7 @@
                         <!-- Predictions will be loaded here -->
                     </div>
                     <div class="guesser-login-prompt">
-                        <p>Want to become a guesser? <a href="guesser.html">Login here</a> or contact admin for guesser ID</p>
+                        <p>Want to become a guesser? <a href="login.html?type=guesser">Login here</a> or contact admin for guesser ID</p>
                     </div>
                 </section>
             </div>
@@ -303,7 +300,7 @@
                     </ul>
                     <div class="premium-contact">
                         <p>Contact admin for premium ID and password</p>
-                        <a href="#contact" class="btn-premium-small">
+                        <a href="login.html?type=premium" class="btn-premium-small">
                             <i class="fas fa-key"></i> Get Premium Access
                         </a>
                     </div>
@@ -332,15 +329,15 @@
                         </div>
                         <div class="stat-item">
                             <span class="stat-label">Total Guessers:</span>
-                            <span class="stat-value">25</span>
+                            <span class="stat-value" id="total-guessers">25</span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-label">Predictions:</span>
-                            <span class="stat-value">156</span>
+                            <span class="stat-value" id="total-predictions">156</span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-label">Accuracy:</span>
-                            <span class="stat-value">89%</span>
+                            <span class="stat-value" id="accuracy-rate">89%</span>
                         </div>
                     </div>
                 </div>
@@ -371,11 +368,11 @@
                 <div class="mobile-stats">
                     <div class="mobile-stat-item">
                         <span>Markets: <strong>6</strong></span>
-                        <span>Guessers: <strong>25</strong></span>
+                        <span>Guessers: <strong id="mobile-total-guessers">25</strong></span>
                     </div>
                     <div class="mobile-stat-item">
-                        <span>Predictions: <strong>156</strong></span>
-                        <span>Accuracy: <strong>89%</strong></span>
+                        <span>Predictions: <strong id="mobile-total-predictions">156</strong></span>
+                        <span>Accuracy: <strong id="mobile-accuracy-rate">89%</strong></span>
                     </div>
                 </div>
             </div>
@@ -384,7 +381,7 @@
             <div class="mobile-premium-box">
                 <h3><i class="fas fa-crown"></i> PREMIUM ACCESS</h3>
                 <p>Get premium predictions with 95% accuracy</p>
-                <a href="#contact" class="btn-premium-small">
+                <a href="login.html?type=premium" class="btn-premium-small">
                     <i class="fas fa-key"></i> Get Premium
                 </a>
             </div>
@@ -423,9 +420,9 @@
                     <ul>
                         <li><a href="index.html">Home</a></li>
                         <li><a href="results-history.html">Results History</a></li>
-                        <li><a href="admin.html">Admin Panel</a></li>
-                        <li><a href="guesser.html">Guesser Login</a></li>
-                        <li><a href="manage-results.html">Manage Results</a></li>
+                        <li><a href="login.html">User Login</a></li>
+                        <li><a href="login.html?type=guesser">Guesser Login</a></li>
+                        <li><a href="login.html?type=premium">Premium Login</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">
@@ -440,16 +437,6 @@
         </div>
     </footer>
 
-    <!-- Admin Access Button -->
-    <a href="admin.html" class="admin-access-btn">
-        <i class="fas fa-lock"></i>
-    </a>
-
-    <!-- Results Management Button -->
-    <a href="manage-results.html" class="results-access-btn">
-        <i class="fas fa-flag-checkered"></i>
-    </a>
-
     <!-- Mobile Quick Actions -->
     <div class="mobile-quick-actions mobile-only">
         <a href="index.html" class="mobile-quick-action">
@@ -460,13 +447,13 @@
             <i class="fas fa-history"></i>
             <span>Results</span>
         </a>
-        <a href="guesser.html" class="mobile-quick-action">
+        <a href="login.html?type=guesser" class="mobile-quick-action">
             <i class="fas fa-users"></i>
             <span>Guessers</span>
         </a>
-        <a href="user-dashboard.html" class="mobile-quick-action">
+        <a href="login.html" class="mobile-quick-action">
             <i class="fas fa-user"></i>
-            <span>Dashboard</span>
+            <span>Login</span>
         </a>
     </div>
 
