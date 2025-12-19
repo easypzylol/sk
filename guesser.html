@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guesser Panel - Matka King</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>GUESSER PANEL</h1>
+                <p>Submit Your Predictions for 6 Games</p>
+            </div>
+            <div class="header-buttons">
+                <a href="index.html" class="btn btn-outline">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Login Section -->
+        <div id="loginSection" class="login-container">
+            <div class="login-header">
+                <h2><i class="fas fa-user-secret"></i> Guesser Login</h2>
+                <p>Enter your Guesser ID and Password</p>
+            </div>
+            <div class="form-group">
+                <label for="guesserId">Guesser ID</label>
+                <input type="text" id="guesserId" class="form-control" placeholder="Enter guesser ID">
+            </div>
+            <div class="form-group">
+                <label for="guesserPassword">Password</label>
+                <input type="password" id="guesserPassword" class="form-control" placeholder="Enter password">
+            </div>
+            <div class="form-group">
+                <button onclick="loginGuesser()" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <p>Contact admin for guesser account</p>
+                <a href="index.html" style="color: #ff4081; text-decoration: none;">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+            </div>
+        </div>
+
+        <!-- Guesser Dashboard (Hidden by default) -->
+        <div id="guesserDashboard" style="display: none;">
+            <div class="admin-header">
+                <h1><i class="fas fa-bullhorn"></i> Guesser Dashboard</h1>
+                <p>Welcome, <span id="currentGuesserName"></span> (ID: <span id="currentGuesserId"></span>)</p>
+            </div>
+
+            <div class="admin-grid">
+                <!-- Submit Prediction -->
+                <div class="admin-card">
+                    <h3><i class="fas fa-paper-plane"></i> Submit Prediction</h3>
+                    <div class="form-group">
+                        <label>Select Game</label>
+                        <select id="predictionGame" class="form-control">
+                            <option value="1">FARIDABAD</option>
+                            <option value="2">GAZIABAD</option>
+                            <option value="3">GALI</option>
+                            <option value="4">DESHWAR</option>
+                            <option value="5">GALI DUBAI</option>
+                            <option value="6">DESHWAR DUBAI</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Enter 3 Numbers (00-99)</label>
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <input type="number" id="num1" class="form-control" placeholder="First" min="0" max="99">
+                            <input type="number" id="num2" class="form-control" placeholder="Second" min="0" max="99">
+                            <input type="number" id="num3" class="form-control" placeholder="Third" min="0" max="99">
+                        </div>
+                        <small style="color: #a0a0c0;">Enter numbers between 00-99 only</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Confidence Level</label>
+                        <select id="confidence" class="form-control">
+                            <option value="low">Low (30-50%)</option>
+                            <option value="medium">Medium (50-70%)</option>
+                            <option value="high">High (70-90%)</option>
+                            <option value="very-high">Very High (90-100%)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Notes (Optional)</label>
+                        <textarea id="predictionNotes" class="form-control" rows="2" placeholder="Any special notes..."></textarea>
+                    </div>
+                    <button onclick="submitPrediction()" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-share-square"></i> Submit Prediction
+                    </button>
+                </div>
+
+                <!-- My Recent Predictions -->
+                <div class="admin-card">
+                    <h3><i class="fas fa-history"></i> My Recent Predictions</h3>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Game</th>
+                                    <th>Numbers</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="myPredictions">
+                                <!-- Predictions will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Performance Stats -->
+                <div class="admin-card">
+                    <h3><i class="fas fa-chart-line"></i> My Performance</h3>
+                    <div id="performanceStats">
+                        <!-- Stats will be loaded here -->
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <h4>Quick Actions</h4>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button onclick="viewAllMyPredictions()" class="btn btn-small">
+                                <i class="fas fa-list"></i> View All
+                            </button>
+                            <button onclick="exportMyData()" class="btn btn-small">
+                                <i class="fas fa-download"></i> Export Data
+                            </button>
+                            <button onclick="logoutGuesser()" class="btn btn-small btn-danger">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Game Schedule -->
+            <div class="admin-card" style="margin-top: 30px;">
+                <h3><i class="fas fa-calendar-alt"></i> Today's Game Schedule</h3>
+                <div class="games-grid" id="gameSchedule">
+                    <!-- Game schedule will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>Guesser Panel - Matka King &copy; 2024 | For authorized guessers only</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Guesser Panel JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if guesser is already logged in
+            const currentGuesser = JSON.parse(localStorage.getItem('currentGuesser'));
+            if (currentGuesser) {
+                showGuesserDashboard(currentGuesser);
+            }
+        });
+
+        function loginGuesser() {
+            const guesserId = document.getElementById('guesserId').value.trim();
+            const password = document.getElementById('guesserPassword').value.trim();
+            
+            if (!guesserId || !password) {
+                showNotification('Please enter ID and password!', 'error');
+                return;
+            }
+            
+            const guessers = JSON.parse(localStorage.getItem('matkaGuessers')) || [];
+            const guesser = guessers.find(g => 
+                g.id === guesserId && 
+                g.password === password && 
+                g.status === 'active'
+            );
+            
+            if (guesser) {
+                localStorage.setItem('currentGuesser', JSON.stringify(guesser));
+                showGuesserDashboard(guesser);
+                showNotification('Login successful!', 'success');
+            } else {
+                showNotification('Invalid credentials or account inactive!', 'error');
+            }
+        }
+
+        function showGuesserDashboard(guesser) {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('guesserDashboard').style.display = 'block';
+            
+            document.getElementById('currentGuesserName').textContent = guesser.name;
+            document.getElementById('currentGuesserId').textContent = guesser.id;
+            
+            loadMyPredictions();
+            loadPerformanceStats();
+            loadGameSchedule();
+        }
+
+        function submitPrediction() {
+            const currentGuesser = JSON.parse(localStorage.getItem('currentGuesser'));
+            if (!currentGuesser) {
+                showNotification('Please login first!', 'error');
+                return;
+            }
+            
+            const gameId = parseInt(document.getElementById('predictionGame').value);
+            const num1 = parseInt(document.getElementById('num1').value);
+            const num2 = parseInt(document.getElementById('num2').value);
+            const num3 = parseInt(document.getElementById('num3').value);
+            const confidence = document.getElementById('confidence').value;
+            const notes = document.getElementById('predictionNotes').value.trim();
+            
+            // Validate numbers
+            if (isNaN(num1) || isNaN(num2) || isNaN(num3) || 
+                num1 < 0 || num1 > 99 || 
+                num2 < 0 || num2 > 99 || 
+                num3 < 0 || num3 > 99) {
+                showNotification('Please enter valid numbers between 00-99!', 'error');
+                return;
+            }
+            
+            // Save prediction
+            let predictions = JSON.parse(localStorage.getItem('matkaPredictions') || '[]');
+            
+            predictions.push({
+                id: Date.now(),
+                guesserId: currentGuesser.id,
+                guesserName: currentGuesser.name,
+                gameId: gameId,
+                numbers: [num1, num2, num3],
+                confidence: confidence,
+                notes: notes,
+                timestamp: new Date().toISOString(),
+                status: 'pending'
+            });
+            
+            localStorage.setItem('matkaPredictions', JSON.stringify(predictions));
+            
+            // Clear form
+            document.getElementById('num1').value = '';
+            document.getElementById('num2').value = '';
+            document.getElementById('num3').value = '';
+            document.getElementById('predictionNotes').value = '';
+            
+            showNotification('Prediction submitted successfully!', 'success');
+            loadMyPredictions();
+            loadPerformanceStats();
+        }
+
+        function loadMyPredictions() {
+            const currentGuesser = JSON.parse(localStorage.getItem('currentGuesser'));
+            if (!currentGuesser) return;
+            
+            const predictions = JSON.parse(localStorage.getItem('matkaPredictions') || '[]');
+            const games = JSON.parse(localStorage.getItem('matkaGames') || []);
+            
+            const myPredictions = predictions
+                .filter(p => p.guesserId === currentGuesser.id)
+                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                .slice(0, 10);
+            
+            const tbody = document.getElementById('myPredictions');
+            tbody.innerHTML = '';
+            
+            myPredictions.forEach(prediction => {
+                const game = games.find(g => g.id === prediction.gameId);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${formatTime(new Date(prediction.timestamp).toLocaleTimeString())}</td>
+                    <td>${game ? game.name : 'Game'}</td>
+                    <td>
+                        ${prediction.numbers.map(n => n.toString().padStart(2, '0')).join('-')}
+                    </td>
+                    <td>
+                        <span class="${prediction.status === 'correct' ? 'active-status' : 
+                                     prediction.status === 'wrong' ? 'inactive-status' : ''}">
+                            ${prediction.status}
+                        </span>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function loadPerformanceStats() {
+            const currentGuesser = JSON.parse(localStorage.getItem('currentGuesser'));
+            if (!currentGuesser) return;
+            
+            const predictions = JSON.parse(localStorage.getItem('matkaPredictions') || '[]');
+            const myPredictions = predictions.filter(p => p.guesserId === currentGuesser.id);
+            
+            const total = myPredictions.length;
+            const correct = myPredictions.filter(p => p.status === 'correct').length;
+            const pending = myPredictions.filter(p => p.status === 'pending').length;
+            const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0;
+            
+            const statsHtml = `
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Predictions:</span>
+                        <span class="stat-value">${total}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Correct Predictions:</span>
+                        <span class="stat-value">${correct}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Pending Results:</span>
+                        <span class="stat-value">${pending}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Accuracy Rate:</span>
+                        <span class="stat-value">${accuracy}%</span>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('performanceStats').innerHTML = statsHtml;
+        }
+
+        function loadGameSchedule() {
+            const games = JSON.parse(localStorage.getItem('matkaGames')) || [];
+            const container = document.getElementById('gameSchedule');
+            
+            container.innerHTML = '';
+            
+            games.forEach(game => {
+                const gameCard = document.createElement('div');
+                gameCard.className = 'game-card';
+                gameCard.innerHTML = `
+                    <div class="game-header">
+                        <h3>${game.name}</h3>
+                        <span class="game-time">${formatTime(game.time)}</span>
+                    </div>
+                    <div style="text-align: center; padding: 15px 0;">
+                        <div style="color: #a0a0c0; font-size: 0.9rem;">
+                            Next result at ${formatTime(game.time)}
+                        </div>
+                        <button onclick="setPredictionGame(${game.id})" class="btn btn-small" style="margin-top: 10px;">
+                            <i class="fas fa-bullhorn"></i> Predict Now
+                        </button>
+                    </div>
+                `;
+                container.appendChild(gameCard);
+            });
+        }
+
+        function setPredictionGame(gameId) {
+            document.getElementById('predictionGame').value = gameId;
+            document.getElementById('predictionGame').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function viewAllMyPredictions() {
+            const currentGuesser = JSON.parse(localStorage.getItem('currentGuesser'));
+            if (!currentGuesser) return;
+            
+            const predictions = JSON.parse(localStorage.getItem('matkaPredictions') || '[]');
+            const myPredictions = predictions.filter(p => p.guesserId === currentGuesser.id);
+            const games = JSON.parse(localStorage.getItem('matkaGames') || []);
+            
+            let html = '<div style="max-height: 400px; overflow-y: auto;">';
+            html += '<table style="width: 100%; border-collapse: collapse;">';
+            html += '<thead><tr><th>Date</th><th>Game</th><th>Numbers</th><th>Status</th></tr></thead>';
+            html += '<tbody>';
+            
+            myPredictions.forEach(prediction => {
+                const game = games.find(g => g.id === prediction.gameId);
+                html += `
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <td style="padding: 8px;">${new Date(prediction.timestamp).toLocaleDateString()}</td>
+                        <td style="padding: 8px;">${game ? game.name : 'Game'}</td>
+                        <td style="padding: 8px; color: #2196f3;">${prediction.numbers.map(n => n.toString().padStart(2, '0')).join('-')}</td>
+                        <td style="padding: 8px;">
+                            <span class="${prediction.status === 'correct' ? 'active-status' : 
+                                         prediction.status === 'wrong' ? 'inactive-status' : ''}">
+                                ${prediction.status}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table></div>';
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div style="background: #1a1a2e; padding: 30px; border-radius: 10px; max-width: 600px; width: 90%;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h3 style="color: #ff4081;">All My Predictions</h3>
+                        <button onclick="this.closest('.modal').remove()" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;">×</button>
+                    </div>
+                    ${myPredictions.length > 0 ? html : '<p style="text-align: center;">No predictions found.</p>'}
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button onclick="this.closest('.modal').remove()" style="background: #f50057; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Close</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        function exportMyData() {
+            const currentGuesser = JSON.parse(localStorage.getItem('currentGuesser'));
+            if (!currentGuesser) return;
+            
+            const predictions = JSON.parse(localStorage.getItem('matkaPredictions') || '[]');
+            const myPredictions = predictions.filter(p => p.guesserId === currentGuesser.id);
+            const games = JSON.parse(localStorage.getItem('matkaGames') || []);
+            
+            let csvContent = "Date,Time,Game,Numbers,Status,Confidence,Notes\n";
+            
+            myPredictions.forEach(prediction => {
+                const game = games.find(g => g.id === prediction.gameId);
+                const date = new Date(prediction.timestamp);
+                csvContent += `${date.toLocaleDateString()},${date.toLocaleTimeString()},${game ? game.name : 'Game'},"${prediction.numbers.join('-')}",${prediction.status},${prediction.confidence},"${prediction.notes}"\n`;
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `guesser-${currentGuesser.id}-data.csv`;
+            a.click();
+            
+            showNotification('Data exported successfully!', 'success');
+        }
+
+        function logoutGuesser() {
+            localStorage.removeItem('currentGuesser');
+            location.reload();
+        }
+
+        // Helper functions
+        function formatTime(timeStr) {
+            if (!timeStr) return '';
+            const [hours, minutes] = timeStr.split(':');
+            const hour = parseInt(hours);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const hour12 = hour % 12 || 12;
+            return `${hour12}:${minutes.padStart(2, '0')} ${ampm}`;
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#00c853' : type === 'error' ? '#ff1744' : '#2196f3'};
+                color: white;
+                padding: 15px 25px;
+                border-radius: 5px;
+                z-index: 1000;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

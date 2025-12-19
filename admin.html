@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Matka King</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Admin Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-header">
+            <h2><i class="fas fa-lock"></i> Admin Login</h2>
+            <p>Enter admin credentials to access the panel</p>
+        </div>
+        <form id="adminLoginForm">
+            <div class="form-group">
+                <label for="adminUsername">Username</label>
+                <input type="text" id="adminUsername" class="form-control" placeholder="Enter username" required>
+            </div>
+            <div class="form-group">
+                <label for="adminPassword">Password</label>
+                <input type="password" id="adminPassword" class="form-control" placeholder="Enter password" required>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </div>
+        </form>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="index.html" style="color: #ff4081; text-decoration: none;">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard (Hidden by default) -->
+    <div id="adminDashboard" style="display: none;">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="logo">
+                    <h1>MATKA KING - ADMIN PANEL</h1>
+                    <p>Complete Control Center</p>
+                </div>
+                <div class="header-buttons">
+                    <button onclick="logout()" class="btn btn-danger">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container admin-panel">
+            <div class="admin-header">
+                <h1><i class="fas fa-cogs"></i> Admin Dashboard</h1>
+                <p>Manage everything from this panel</p>
+            </div>
+
+            <!-- Dashboard Grid -->
+            <div class="admin-grid">
+                <!-- Game Management -->
+                <div class="admin-card">
+                    <h3><i class="fas fa-dice"></i> Manage 6 Games</h3>
+                    <div class="form-group">
+                        <label>Select Game</label>
+                        <select id="gameSelect" class="form-control" onchange="loadGameData()">
+                            <option value="1">FARIDABAD</option>
+                            <option value="2">GAZIABAD</option>
+                            <option value="3">GALI</option>
+                            <option value="4">DESHWAR</option>
+                            <option value="5">GALI DUBAI</option>
+                            <option value="6">DESHWAR DUBAI</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Game Name</label>
+                        <input type="text" id="gameName" class="form-control" placeholder="Game name">
+                    </div>
+                    <div class="form-group">
+                        <label>Game Time (24-hour format)</label>
+                        <input type="text" id="gameTime" class="form-control" placeholder="HH:MM">
+                    </div>
+                    <div class="form-group">
+                        <label>Today's Result (3 numbers, 00-99)</label>
+                        <input type="text" id="gameResult" class="form-control" placeholder="e.g., 25,47,89">
+                    </div>
+                    <button onclick="updateGame()" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-save"></i> Update Game
+                    </button>
+                </div>
+
+                <!-- Guesser Management -->
+                <div class="admin-card">
+                    <h3><i class="fas fa-users"></i> Manage Guessers</h3>
+                    <div class="form-group">
+                        <label>Guesser ID</label>
+                        <input type="text" id="guesserId" class="form-control" placeholder="Create guesser ID">
+                    </div>
+                    <div class="form-group">
+                        <label>Guesser Name</label>
+                        <input type="text" id="guesserName" class="form-control" placeholder="Guesser full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="text" id="guesserPassword" class="form-control" placeholder="Set password">
+                    </div>
+                    <button onclick="createGuesser()" class="btn btn-success" style="width: 100%; margin-bottom: 20px;">
+                        <i class="fas fa-user-plus"></i> Create Guesser Account
+                    </button>
+                    
+                    <h4>Active Guessers</h4>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="guesserList">
+                                <!-- Guesser list will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Premium User Management -->
+                <div class="admin-card">
+                    <h3><i class="fas fa-crown"></i> Premium Users</h3>
+                    <div class="form-group">
+                        <label>Premium ID</label>
+                        <input type="text" id="premiumId" class="form-control" placeholder="Create premium ID">
+                    </div>
+                    <div class="form-group">
+                        <label>User Name</label>
+                        <input type="text" id="premiumName" class="form-control" placeholder="User name">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="text" id="premiumPassword" class="form-control" placeholder="Set password">
+                    </div>
+                    <button onclick="createPremium()" class="btn btn-premium" style="width: 100%; margin-bottom: 20px;">
+                        <i class="fas fa-plus"></i> Create Premium Account
+                    </button>
+                    
+                    <h4>Premium Users</h4>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="premiumList">
+                                <!-- Premium list will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Contact Links Management -->
+                <div class="admin-card">
+                    <h3><i class="fas fa-link"></i> Contact Links</h3>
+                    <div class="form-group">
+                        <label>Telegram Group Link</label>
+                        <input type="text" id="telegramGroup" class="form-control" placeholder="Telegram group URL">
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp Support</label>
+                        <input type="text" id="whatsappSupport" class="form-control" placeholder="WhatsApp URL">
+                    </div>
+                    <div class="form-group">
+                        <label>Khaiwal Telegram</label>
+                        <input type="text" id="khaiwalTelegram" class="form-control" placeholder="Khaiwal Telegram URL">
+                    </div>
+                    <div class="form-group">
+                        <label>Support Email</label>
+                        <input type="text" id="supportEmail" class="form-control" placeholder="Support email">
+                    </div>
+                    <button onclick="updateContacts()" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-save"></i> Update Contact Links
+                    </button>
+                </div>
+
+                <!-- Advertisement Management -->
+                <div class="admin-card">
+                    <h3><i class="fas fa-ad"></i> Manage Ads</h3>
+                    <div class="form-group">
+                        <label>Top Banner Ad (728x90)</label>
+                        <textarea id="topBannerAd" class="form-control" rows="3" placeholder="Paste top banner ad code"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Sidebar Ad (300x600)</label>
+                        <textarea id="sidebarAd" class="form-control" rows="3" placeholder="Paste sidebar ad code"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Rectangle Ad (300x250)</label>
+                        <textarea id="rectangleAd" class="form-control" rows="3" placeholder="Paste rectangle ad code"></textarea>
+                    </div>
+                    <button onclick="updateAds()" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-sync-alt"></i> Update All Ads
+                    </button>
+                </div>
+
+                <!-- Results Management -->
+                <div class="admin-card">
+                    <h3><i class="fas fa-history"></i> Manage Results</h3>
+                    <div class="form-group">
+                        <label>Select Date</label>
+                        <input type="date" id="resultDate" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Select Game</label>
+                        <select id="resultGame" class="form-control">
+                            <option value="1">FARIDABAD</option>
+                            <option value="2">GAZIABAD</option>
+                            <option value="3">GALI</option>
+                            <option value="4">DESHWAR</option>
+                            <option value="5">GALI DUBAI</option>
+                            <option value="6">DESHWAR DUBAI</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Result Numbers (3 numbers)</label>
+                        <input type="text" id="resultNumbers" class="form-control" placeholder="e.g., 25,47,89">
+                    </div>
+                    <button onclick="saveHistoricalResult()" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-save"></i> Save Historical Result
+                    </button>
+                    
+                    <div style="margin-top: 20px;">
+                        <button onclick="exportAllData()" class="btn btn-success" style="width: 100%;">
+                            <i class="fas fa-download"></i> Export All Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Controls -->
+            <div class="admin-card" style="margin-top: 30px;">
+                <h3><i class="fas fa-sliders-h"></i> System Controls</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <button onclick="clearAllData()" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Clear All Data
+                    </button>
+                    <button onclick="resetToDefault()" class="btn btn-warning">
+                        <i class="fas fa-undo"></i> Reset to Default
+                    </button>
+                    <button onclick="backupData()" class="btn btn-success">
+                        <i class="fas fa-database"></i> Backup Data
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-bottom">
+                    <p>Admin Panel - Matka King &copy; 2024</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>
