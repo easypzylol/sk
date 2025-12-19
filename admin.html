@@ -3,719 +3,470 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Matka King</title>
+    <title>Admin Dashboard - Matka King</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .login-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(26, 26, 46, 0.95);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            padding: 20px;
-        }
-        
-        .login-box {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 30px;
-            width: 100%;
-            max-width: 400px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            animation: slideIn 0.5s ease;
-        }
-        
-        .login-box h2 {
-            color: #ff4081;
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 1.5rem;
-        }
-        
-        .login-logo {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .login-logo h3 {
-            color: #ff4081;
-            font-size: 1.2rem;
-        }
-    </style>
 </head>
 <body>
-    <!-- Login Overlay (shown when not logged in) -->
-    <div id="loginOverlay" class="login-overlay">
-        <div class="login-box">
-            <div class="login-logo">
-                <h3><i class="fas fa-lock"></i> ADMIN LOGIN</h3>
-                <p style="color: #a0a0c0; font-size: 0.9rem; margin-top: 5px;">Matka King Control Panel</p>
-            </div>
-            
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" class="form-control" placeholder="Enter admin username" required autofocus>
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" class="form-control" placeholder="Enter password" required>
-                </div>
-                
-                <div style="margin-top: 25px;">
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">
-                        <i class="fas fa-sign-in-alt"></i> Login
-                    </button>
-                </div>
-                
-                <div style="margin-top: 15px; text-align: center;">
-                    <a href="index.html" style="color: #a0a0c0; text-decoration: none; font-size: 0.9rem;">
-                        <i class="fas fa-arrow-left"></i> Back to Home
-                    </a>
-                </div>
-            </form>
-            
-            <!-- Default Credentials -->
-            <div style="margin-top: 20px; padding: 15px; background: rgba(255, 64, 129, 0.1); border-radius: 5px; font-size: 0.85rem;">
-                <p style="color: #ff4081; margin-bottom: 5px;"><i class="fas fa-key"></i> Default Credentials:</p>
-                <p style="color: #a0a0c0; margin: 0;">Username: <strong>admin</strong></p>
-                <p style="color: #a0a0c0; margin: 0;">Password: <strong>matka123</strong></p>
-            </div>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
+    <div class="mobile-menu">
+        <div class="mobile-menu-header">
+            <h3><i class="fas fa-bars"></i> Admin Menu</h3>
+            <button class="mobile-menu-close" onclick="toggleMobileMenu()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mobile-menu-content">
+            <a href="admin-dashboard.html" class="mobile-menu-item active">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+            <a href="manage-results.html" class="mobile-menu-item">
+                <i class="fas fa-flag-checkered"></i> Manage Results
+            </a>
+            <a href="manage-users.html" class="mobile-menu-item">
+                <i class="fas fa-users"></i> Manage Users
+            </a>
+            <a href="manage-predictions.html" class="mobile-menu-item">
+                <i class="fas fa-bullseye"></i> Manage Predictions
+            </a>
+            <a href="index.html" class="mobile-menu-item">
+                <i class="fas fa-home"></i> Home Page
+            </a>
+            <a href="#" class="mobile-menu-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
         </div>
     </div>
 
-    <!-- Admin Panel Content (hidden until login) -->
-    <div id="adminContent" style="display: none;">
-        <div class="admin-panel">
-            <div class="container">
-                <!-- Admin Header -->
-                <div class="admin-header">
-                    <h1><i class="fas fa-lock"></i> MATKA KING ADMIN PANEL</h1>
-                    <p>Control results, manage guessers, and monitor activities</p>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
-                        <button id="logout-btn" class="btn btn-danger">
-                            <i class="fas fa-sign-out-alt"></i> Logout
-                        </button>
-                        <a href="index.html" class="btn btn-outline">
-                            <i class="fas fa-home"></i> Home
-                        </a>
-                        <a href="manage-results.html" class="btn btn-primary">
-                            <i class="fas fa-edit"></i> Manage Results
-                        </a>
-                    </div>
-                </div>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>MATKA KING</h1>
+                <p>Admin Dashboard</p>
+            </div>
+            <div class="header-buttons">
+                <button onclick="logout()" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </header>
 
-                <!-- Results Management -->
-                <div class="admin-card">
-                    <h3><i class="fas fa-flag-checkered"></i> MANAGE TODAY'S RESULTS</h3>
-                    
-                    <div class="today-date">
-                        <i class="fas fa-calendar"></i> Today: <span id="current-date"></span>
-                    </div>
-                    
-                    <div class="results-form-grid">
-                        <!-- Faridabad -->
-                        <div class="result-set-card">
-                            <h4>FARIDABAD (5:15 PM)</h4>
-                            <div class="form-group">
-                                <label>Result Number (00-99):</label>
-                                <input type="text" id="result-faridabad" class="form-control" maxlength="2" 
-                                       placeholder="Enter result">
-                            </div>
-                            <div id="status-faridabad" class="status-badge unpublished">Not Set</div>
-                        </div>
-                        
-                        <!-- Gaziabad -->
-                        <div class="result-set-card">
-                            <h4>GAZIABAD (9:15 PM)</h4>
-                            <div class="form-group">
-                                <label>Result Number (00-99):</label>
-                                <input type="text" id="result-gaziabad" class="form-control" maxlength="2" 
-                                       placeholder="Enter result">
-                            </div>
-                            <div id="status-gaziabad" class="status-badge unpublished">Not Set</div>
-                        </div>
-                        
-                        <!-- Gali -->
-                        <div class="result-set-card">
-                            <h4>GALI (10:30 PM)</h4>
-                            <div class="form-group">
-                                <label>Result Number (00-99):</label>
-                                <input type="text" id="result-gali" class="form-control" maxlength="2" 
-                                       placeholder="Enter result">
-                            </div>
-                            <div id="status-gali" class="status-badge unpublished">Not Set</div>
-                        </div>
-                        
-                        <!-- Deshwar -->
-                        <div class="result-set-card">
-                            <h4>DESHWAR (4:45 PM)</h4>
-                            <div class="form-group">
-                                <label>Result Number (00-99):</label>
-                                <input type="text" id="result-deshwar" class="form-control" maxlength="2" 
-                                       placeholder="Enter result">
-                            </div>
-                            <div id="status-deshwar" class="status-badge unpublished">Not Set</div>
-                        </div>
-                        
-                        <!-- Gali Dubai -->
-                        <div class="result-set-card">
-                            <h4>GALI DUBAI (2:30 PM)</h4>
-                            <div class="form-group">
-                                <label>Result Number (00-99):</label>
-                                <input type="text" id="result-gali-dubai" class="form-control" maxlength="2" 
-                                       placeholder="Enter result">
-                            </div>
-                            <div id="status-gali_dubai" class="status-badge unpublished">Not Set</div>
-                        </div>
-                        
-                        <!-- Deshwar Dubai -->
-                        <div class="result-set-card">
-                            <h4>DESHWAR DUBAI (11:45 PM)</h4>
-                            <div class="form-group">
-                                <label>Result Number (00-99):</label>
-                                <input type="text" id="result-deshwar-dubai" class="form-control" maxlength="2" 
-                                       placeholder="Enter result">
-                            </div>
-                            <div id="status-deshwar_dubai" class="status-badge unpublished">Not Set</div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-actions" style="margin-top: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button id="save-results" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Save Results
-                        </button>
-                        <button id="publish-results" class="btn btn-success">
-                            <i class="fas fa-broadcast-tower"></i> Publish Results
-                        </button>
-                        <button id="clear-results" class="btn btn-danger">
-                            <i class="fas fa-trash"></i> Clear All
-                        </button>
-                    </div>
-                </div>
+    <!-- Admin Navigation -->
+    <nav class="admin-nav container">
+        <a href="admin-dashboard.html" class="active">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        <a href="manage-results.html">
+            <i class="fas fa-flag-checkered"></i> Manage Results
+        </a>
+        <a href="manage-users.html">
+            <i class="fas fa-users"></i> Manage Users
+        </a>
+        <a href="manage-predictions.html">
+            <i class="fas fa-bullseye"></i> Manage Predictions
+        </a>
+        <a href="index.html">
+            <i class="fas fa-home"></i> View Site
+        </a>
+    </nav>
 
-                <!-- Guesser Management -->
-                <div class="admin-card">
-                    <h3><i class="fas fa-users"></i> MANAGE GUESSERS</h3>
-                    
-                    <!-- Add New Guesser -->
-                    <div class="form-group" style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-                        <div style="flex: 1; min-width: 150px;">
-                            <label>New Guesser ID:</label>
-                            <input type="text" id="new-guesser-id" class="form-control" placeholder="G001">
-                        </div>
-                        <div style="flex: 2; min-width: 200px;">
-                            <label>Guesser Name:</label>
-                            <input type="text" id="new-guesser-name" class="form-control" placeholder="Enter name">
-                        </div>
-                        <div style="align-self: flex-end; min-width: 100px;">
-                            <button id="add-guesser" class="btn btn-primary" style="width: 100%;">
-                                <i class="fas fa-plus"></i> Add
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Guesser List -->
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Guesser ID</th>
-                                    <th>Name</th>
-                                    <th>Rating</th>
-                                    <th>Status</th>
-                                    <th>Predictions</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="guesser-list">
-                                <!-- Guesser rows will be loaded here -->
-                            </tbody>
-                        </table>
-                    </div>
-                    
-                    <div style="margin-top: 20px;">
-                        <button id="save-guessers" class="btn btn-success">
-                            <i class="fas fa-save"></i> Save Changes
-                        </button>
-                    </div>
-                </div>
+    <!-- Main Content -->
+    <main class="container dashboard-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1><i class="fas fa-lock"></i> ADMIN CONTROL PANEL</h1>
+            <p>Manage all aspects of the Matka King website</p>
+        </div>
 
-                <!-- System Stats -->
-                <div class="admin-card">
-                    <h3><i class="fas fa-chart-line"></i> SYSTEM STATISTICS</h3>
-                    
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
-                        <div class="stat-card">
-                            <h4><i class="fas fa-eye"></i> Total Visitors</h4>
-                            <div class="stat-number">1,248</div>
-                            <div class="stat-change positive">+12% today</div>
-                        </div>
-                        
-                        <div class="stat-card">
-                            <h4><i class="fas fa-users"></i> Active Guessers</h4>
-                            <div class="stat-number">24</div>
-                            <div class="stat-change positive">+3 today</div>
-                        </div>
-                        
-                        <div class="stat-card">
-                            <h4><i class="fas fa-flag"></i> Results Today</h4>
-                            <div class="stat-number">2/6</div>
-                            <div class="stat-change">4 pending</div>
-                        </div>
-                        
-                        <div class="stat-card">
-                            <h4><i class="fas fa-bell"></i> Notifications</h4>
-                            <div class="stat-number">156</div>
-                            <div class="stat-change positive">All sent</div>
-                        </div>
+        <!-- User Info -->
+        <div class="user-info">
+            <div class="user-details">
+                <h3 id="admin-name">Super Admin</h3>
+                <p><i class="fas fa-user-shield"></i> Administrator | <span id="login-time"></span></p>
+            </div>
+            <div>
+                <span class="badge badge-admin">ADMIN</span>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h3><i class="fas fa-users"></i> USERS STATISTICS</h3>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Users:</span>
+                        <span class="stat-value" id="total-users">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Admins:</span>
+                        <span class="stat-value" id="total-admins">1</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Guessers:</span>
+                        <span class="stat-value" id="total-guessers">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Premium Users:</span>
+                        <span class="stat-value" id="total-premium">0</span>
                     </div>
                 </div>
-                
-                <!-- Quick Actions -->
-                <div class="admin-card">
-                    <h3><i class="fas fa-bolt"></i> QUICK ACTIONS</h3>
-                    
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <a href="index.html" class="btn btn-outline">
-                            <i class="fas fa-home"></i> View Site
-                        </a>
-                        <a href="manage-results.html" class="btn btn-outline">
-                            <i class="fas fa-edit"></i> Edit Results
-                        </a>
-                        <a href="results-history.html" class="btn btn-outline">
-                            <i class="fas fa-history"></i> Results History
-                        </a>
-                        <button class="btn btn-outline" onclick="sendTestNotification()">
-                            <i class="fas fa-bell"></i> Test Notification
-                        </button>
-                        <button class="btn btn-outline" onclick="backupData()">
-                            <i class="fas fa-download"></i> Backup Data
-                        </button>
+            </div>
+
+            <div class="dashboard-card">
+                <h3><i class="fas fa-flag-checkered"></i> RESULTS STATISTICS</h3>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Today's Results:</span>
+                        <span class="stat-value" id="today-results">0/6</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Published:</span>
+                        <span class="stat-value" id="published-results">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Pending:</span>
+                        <span class="stat-value" id="pending-results">6</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Total History:</span>
+                        <span class="stat-value" id="total-history">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3><i class="fas fa-bullseye"></i> PREDICTIONS STATISTICS</h3>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Today's Predictions:</span>
+                        <span class="stat-value" id="today-predictions">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Predictions:</span>
+                        <span class="stat-value" id="total-predictions">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Accuracy Rate:</span>
+                        <span class="stat-value" id="overall-accuracy">0%</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Active Guessers:</span>
+                        <span class="stat-value" id="active-guessers">0</span>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
+        <!-- Quick Actions -->
+        <div class="dashboard-card">
+            <h3><i class="fas fa-bolt"></i> QUICK ACTIONS</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                <button class="btn btn-primary" onclick="window.location.href='manage-results.html'">
+                    <i class="fas fa-plus"></i> Add Today's Results
+                </button>
+                <button class="btn btn-success" onclick="generateHistoricalResults()">
+                    <i class="fas fa-history"></i> Generate Historical Data
+                </button>
+                <button class="btn btn-info" onclick="window.location.href='manage-users.html'">
+                    <i class="fas fa-user-plus"></i> Create New User
+                </button>
+                <button class="btn btn-premium" onclick="window.location.href='manage-predictions.html'">
+                    <i class="fas fa-edit"></i> Edit Predictions
+                </button>
+                <button class="btn btn-outline" onclick="backupAllData()">
+                    <i class="fas fa-download"></i> Backup All Data
+                </button>
+                <button class="btn btn-outline" onclick="restoreAllData()">
+                    <i class="fas fa-upload"></i> Restore Data
+                </button>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="dashboard-card">
+            <h3><i class="fas fa-history"></i> RECENT ACTIVITY</h3>
+            <div id="recent-activity" style="margin-top: 15px;">
+                <p>Loading recent activity...</p>
+            </div>
+        </div>
+
+        <!-- System Information -->
+        <div class="dashboard-card">
+            <h3><i class="fas fa-info-circle"></i> SYSTEM INFORMATION</h3>
+            <div class="stats" style="margin-top: 15px;">
+                <div class="stat-item">
+                    <span class="stat-label">Browser:</span>
+                    <span class="stat-value" id="browser-info">Loading...</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">LocalStorage:</span>
+                    <span class="stat-value" id="storage-info">Loading...</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Last Backup:</span>
+                    <span class="stat-value" id="last-backup">Never</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">System Status:</span>
+                    <span class="stat-value" id="system-status">Online</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>ADMIN DASHBOARD</h4>
+                    <p>Full control over Matka King website</p>
+                    <p>© 2024 Matka King. Admin Access Only.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="manage-results.html">Manage Results</a></li>
+                        <li><a href="manage-users.html">Manage Users</a></li>
+                        <li><a href="manage-predictions.html">Manage Predictions</a></li>
+                        <li><a href="index.html">View Site</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="mobile-menu.js"></script>
+    <script src="admin-functions.js"></script>
     <script>
-        // Check login status on page load
+        // Check admin login
         document.addEventListener('DOMContentLoaded', function() {
-            const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
-            const loginOverlay = document.getElementById('loginOverlay');
-            const adminContent = document.getElementById('adminContent');
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
             
-            if (isLoggedIn) {
-                // User is logged in, show admin panel
-                loginOverlay.style.display = 'none';
-                adminContent.style.display = 'block';
-                
-                // Set current date
-                document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-IN', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-                
-                // Load admin data
-                loadAdminData();
-            } else {
-                // User is not logged in, show login form
-                loginOverlay.style.display = 'flex';
-                adminContent.style.display = 'none';
+            if (currentUser.type !== 'admin') {
+                alert('Admin access required!');
+                window.location.href = 'login.html';
+                return;
             }
             
-            // Login form submission - SIMPLE VERSION THAT REFRESHES
-            document.getElementById('loginForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                
-                // Admin credentials
-                const ADMIN_CREDENTIALS = {
-                    username: 'admin',
-                    password: 'matka123'
-                };
-                
-                if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-                    // Successful login
-                    localStorage.setItem('adminLoggedIn', 'true');
-                    
-                    // Auto-refresh the page
-                    location.reload();
-                } else {
-                    // Failed login
-                    alert('Invalid username or password!\n\nUse:\nUsername: admin\nPassword: matka123');
-                    document.getElementById('password').value = '';
-                    document.getElementById('password').focus();
-                }
-            });
+            // Update user info
+            document.getElementById('admin-name').textContent = currentUser.name || 'Super Admin';
+            document.getElementById('login-time').textContent = new Date(currentUser.loginTime).toLocaleTimeString();
             
-            // Logout button
-            document.getElementById('logout-btn').addEventListener('click', function() {
-                if (confirm('Are you sure you want to logout?')) {
-                    localStorage.removeItem('adminLoggedIn');
-                    location.reload(); // Auto-refresh to show login form
-                }
-            });
+            // Load dashboard data
+            loadDashboardStats();
+            loadRecentActivity();
+            loadSystemInfo();
         });
         
-        function loadAdminData() {
-            // Load results
-            const savedResults = localStorage.getItem('matkaResults');
-            if (savedResults) {
-                const results = JSON.parse(savedResults);
-                populateResultsForm(results);
-            }
+        function loadDashboardStats() {
+            // Users statistics
+            const users = JSON.parse(localStorage.getItem('matkaUsers') || '[]');
+            const admins = users.filter(u => u.type === 'admin').length;
+            const guessers = users.filter(u => u.type === 'guesser').length;
+            const premium = users.filter(u => u.type === 'premium').length;
+            const totalUsers = users.length;
             
-            // Load guessers
-            loadGuesserData();
+            document.getElementById('total-users').textContent = totalUsers;
+            document.getElementById('total-admins').textContent = admins;
+            document.getElementById('total-guessers').textContent = guessers;
+            document.getElementById('total-premium').textContent = premium;
             
-            // Setup admin event listeners
-            setupAdminListeners();
+            // Results statistics
+            const results = JSON.parse(localStorage.getItem('matkaResults') || '{}');
+            const today = new Date().toISOString().split('T')[0];
+            const todayResults = results[today] || {};
+            const publishedResults = Object.values(todayResults).filter(r => r.published).length;
+            
+            document.getElementById('today-results').textContent = `${Object.keys(todayResults).length}/6`;
+            document.getElementById('published-results').textContent = publishedResults;
+            document.getElementById('pending-results').textContent = 6 - publishedResults;
+            document.getElementById('total-history').textContent = Object.keys(results).length;
+            
+            // Predictions statistics
+            const predictions = JSON.parse(localStorage.getItem('matkaPredictions') || '[]');
+            const todayPredictions = predictions.filter(p => p.date === today).length;
+            
+            document.getElementById('today-predictions').textContent = todayPredictions;
+            document.getElementById('total-predictions').textContent = predictions.length;
+            document.getElementById('active-guessers').textContent = users.filter(u => u.type === 'guesser' && u.status === 'active').length;
+            
+            // Calculate accuracy (simplified)
+            const correctPredictions = predictions.filter(p => p.isCorrect).length;
+            const accuracy = predictions.length > 0 ? Math.round((correctPredictions / predictions.length) * 100) : 0;
+            document.getElementById('overall-accuracy').textContent = accuracy + '%';
         }
         
-        function populateResultsForm(results) {
-            const games = [
-                { key: 'faridabad', name: 'Faridabad', elementId: 'result-faridabad' },
-                { key: 'gaziabad', name: 'Gaziabad', elementId: 'result-gaziabad' },
-                { key: 'gali', name: 'Gali', elementId: 'result-gali' },
-                { key: 'deshwar', name: 'Deshwar', elementId: 'result-deshwar' },
-                { key: 'gali_dubai', name: 'Gali Dubai', elementId: 'result-gali-dubai' },
-                { key: 'deshwar_dubai', name: 'Deshwar Dubai', elementId: 'result-deshwar-dubai' }
-            ];
+        function loadRecentActivity() {
+            const activity = JSON.parse(localStorage.getItem('adminActivity') || '[]');
+            const container = document.getElementById('recent-activity');
             
-            games.forEach(game => {
-                const element = document.getElementById(game.elementId);
-                if (element && results[game.key]) {
-                    element.value = results[game.key].result || '';
-                    
-                    // Update status indicator
-                    const statusElement = document.getElementById(`status-${game.key}`);
-                    if (statusElement) {
-                        if (results[game.key].published) {
-                            statusElement.textContent = 'Published';
-                            statusElement.className = 'status-badge published';
-                        } else if (results[game.key].result) {
-                            statusElement.textContent = 'Ready to Publish';
-                            statusElement.className = 'status-badge ready';
-                        } else {
-                            statusElement.textContent = 'Not Set';
-                            statusElement.className = 'status-badge unpublished';
-                        }
-                    }
-                }
-            });
-        }
-        
-        function setupAdminListeners() {
-            // Save results button
-            const saveBtn = document.getElementById('save-results');
-            if (saveBtn) {
-                saveBtn.addEventListener('click', saveResults);
-            }
-            
-            // Publish results button
-            const publishBtn = document.getElementById('publish-results');
-            if (publishBtn) {
-                publishBtn.addEventListener('click', publishResults);
-            }
-            
-            // Clear all button
-            const clearBtn = document.getElementById('clear-results');
-            if (clearBtn) {
-                clearBtn.addEventListener('click', clearResults);
-            }
-            
-            // Add guesser button
-            const addGuesserBtn = document.getElementById('add-guesser');
-            if (addGuesserBtn) {
-                addGuesserBtn.addEventListener('click', addNewGuesser);
-            }
-            
-            // Save guessers button
-            const saveGuessersBtn = document.getElementById('save-guessers');
-            if (saveGuessersBtn) {
-                saveGuessersBtn.addEventListener('click', saveGuesserChanges);
-            }
-        }
-        
-        function loadGuesserData() {
-            const guessers = JSON.parse(localStorage.getItem('matkaGuessers') || '[]');
-            const container = document.getElementById('guesser-list');
-            
-            if (!container) return;
-            
-            if (guessers.length === 0) {
-                // Add sample guessers
-                const sampleGuessers = [
-                    { id: 'G001', name: 'Raj Kumar', rating: 92, status: 'active', predictions: 45 },
-                    { id: 'G002', name: 'Amit Singh', rating: 88, status: 'active', predictions: 32 },
-                    { id: 'G003', name: 'Suresh Patel', rating: 85, status: 'inactive', predictions: 28 },
-                    { id: 'G004', name: 'Vijay Sharma', rating: 91, status: 'active', predictions: 51 }
-                ];
-                
-                container.innerHTML = sampleGuessers.map(guesser => createGuesserRow(guesser)).join('');
-            } else {
-                container.innerHTML = guessers.map(guesser => createGuesserRow(guesser)).join('');
-            }
-        }
-        
-        function createGuesserRow(guesser) {
-            return `
-                <tr>
-                    <td>${guesser.id}</td>
-                    <td>${guesser.name}</td>
-                    <td><span class="rating-badge">${guesser.rating}%</span></td>
-                    <td>
-                        <select class="form-control status-select" data-id="${guesser.id}" style="padding: 5px; font-size: 0.9rem;">
-                            <option value="active" ${guesser.status === 'active' ? 'selected' : ''}>Active</option>
-                            <option value="inactive" ${guesser.status === 'inactive' ? 'selected' : ''}>Inactive</option>
-                            <option value="suspended" ${guesser.status === 'suspended' ? 'selected' : ''}>Suspended</option>
-                        </select>
-                    </td>
-                    <td>${guesser.predictions}</td>
-                    <td>
-                        <button class="btn btn-small btn-danger" onclick="removeGuesser('${guesser.id}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `;
-        }
-        
-        function saveResults() {
-            const games = [
-                { key: 'faridabad', elementId: 'result-faridabad' },
-                { key: 'gaziabad', elementId: 'result-gaziabad' },
-                { key: 'gali', elementId: 'result-gali' },
-                { key: 'deshwar', elementId: 'result-deshwar' },
-                { key: 'gali_dubai', elementId: 'result-gali-dubai' },
-                { key: 'deshwar_dubai', elementId: 'result-deshwar-dubai' }
-            ];
-            
-            let results = {};
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('en-IN', { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                hour12: true 
-            });
-            
-            games.forEach(game => {
-                const element = document.getElementById(game.elementId);
-                if (element && element.value.trim() !== '') {
-                    results[game.key] = {
-                        result: element.value.trim(),
-                        time: timeString,
-                        published: false
-                    };
-                }
-            });
-            
-            // Get existing results
-            const existingResults = JSON.parse(localStorage.getItem('matkaResults') || '{}');
-            
-            // Merge with existing (preserve published status if exists)
-            Object.keys(existingResults).forEach(key => {
-                if (existingResults[key].published) {
-                    results[key] = existingResults[key];
-                }
-            });
-            
-            localStorage.setItem('matkaResults', JSON.stringify(results));
-            
-            // Update UI
-            populateResultsForm(results);
-            
-            showNotification('Results saved successfully! They are ready to publish.', 'success');
-        }
-        
-        function publishResults() {
-            const savedResults = localStorage.getItem('matkaResults');
-            if (!savedResults) {
-                showNotification('No results to publish! Save results first.', 'error');
+            if (activity.length === 0) {
+                container.innerHTML = '<p>No recent activity</p>';
                 return;
             }
             
-            let results = JSON.parse(savedResults);
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('en-IN', { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                hour12: true 
+            let html = '';
+            activity.slice(0, 10).forEach(item => {
+                html += `
+                    <div style="padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.9rem;">
+                        <span style="color: #a0a0c0;">${new Date(item.time).toLocaleString()}</span>
+                        <span style="color: #fff; margin-left: 10px;">${item.action}</span>
+                    </div>
+                `;
             });
             
-            // Mark all results as published
-            Object.keys(results).forEach(key => {
-                if (results[key].result) {
-                    results[key].published = true;
-                    results[key].publishTime = timeString;
-                }
-            });
-            
-            localStorage.setItem('matkaResults', JSON.stringify(results));
-            
-            // Update UI
-            populateResultsForm(results);
-            
-            showNotification('Results published successfully! Users can now see them.', 'success');
+            container.innerHTML = html;
         }
         
-        function clearResults() {
-            if (confirm('Are you sure you want to clear all results? This cannot be undone.')) {
-                localStorage.removeItem('matkaResults');
-                
-                // Clear form
-                const gameInputs = [
-                    'result-faridabad', 'result-gaziabad', 'result-gali',
-                    'result-deshwar', 'result-gali-dubai', 'result-deshwar-dubai'
-                ];
-                
-                gameInputs.forEach(id => {
-                    const element = document.getElementById(id);
-                    if (element) element.value = '';
-                });
-                
-                // Update status indicators
+        function loadSystemInfo() {
+            // Browser info
+            document.getElementById('browser-info').textContent = navigator.userAgent.split(' ')[0];
+            
+            // LocalStorage info
+            let totalSize = 0;
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key)) {
+                    totalSize += localStorage[key].length * 2; // UTF-16 characters
+                }
+            }
+            document.getElementById('storage-info').textContent = (totalSize / 1024).toFixed(2) + ' KB';
+            
+            // Last backup
+            const lastBackup = localStorage.getItem('lastBackup');
+            if (lastBackup) {
+                document.getElementById('last-backup').textContent = new Date(lastBackup).toLocaleString();
+            }
+        }
+        
+        function generateHistoricalResults() {
+            if (confirm('Generate historical results for the past 30 days? This will create random results for all 6 games.')) {
                 const games = ['faridabad', 'gaziabad', 'gali', 'deshwar', 'gali_dubai', 'deshwar_dubai'];
-                games.forEach(game => {
-                    const statusElement = document.getElementById(`status-${game}`);
-                    if (statusElement) {
-                        statusElement.textContent = 'Not Set';
-                        statusElement.className = 'status-badge unpublished';
+                let results = JSON.parse(localStorage.getItem('matkaResults') || '{}');
+                
+                for (let i = 30; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    const dateStr = date.toISOString().split('T')[0];
+                    
+                    if (!results[dateStr]) {
+                        results[dateStr] = {};
+                        games.forEach(game => {
+                            const hour = Math.floor(Math.random() * 12) + 12;
+                            const minute = Math.floor(Math.random() * 60);
+                            results[dateStr][game] = {
+                                result: Math.floor(Math.random() * 100).toString().padStart(2, '0'),
+                                published: true,
+                                time: `${hour}:${minute.toString().padStart(2, '0')} ${hour >= 12 ? 'PM' : 'AM'}`,
+                                publishTime: new Date(date.setHours(18, 0, 0, 0)).toLocaleTimeString()
+                            };
+                        });
                     }
-                });
-                
-                showNotification('All results cleared successfully.', 'info');
-            }
-        }
-        
-        function addNewGuesser() {
-            const guesserId = document.getElementById('new-guesser-id').value.trim();
-            const guesserName = document.getElementById('new-guesser-name').value.trim();
-            
-            if (!guesserId || !guesserName) {
-                showNotification('Please enter both ID and Name', 'error');
-                return;
-            }
-            
-            const guessers = JSON.parse(localStorage.getItem('matkaGuessers') || '[]');
-            
-            // Check if ID already exists
-            if (guessers.some(g => g.id === guesserId)) {
-                showNotification('Guesser ID already exists!', 'error');
-                return;
-            }
-            
-            const newGuesser = {
-                id: guesserId,
-                name: guesserName,
-                rating: 50, // Default rating
-                status: 'active',
-                predictions: 0,
-                joined: new Date().toLocaleDateString()
-            };
-            
-            guessers.push(newGuesser);
-            localStorage.setItem('matkaGuessers', JSON.stringify(guessers));
-            
-            // Add to table
-            const container = document.getElementById('guesser-list');
-            container.innerHTML += createGuesserRow(newGuesser);
-            
-            // Clear form
-            document.getElementById('new-guesser-id').value = '';
-            document.getElementById('new-guesser-name').value = '';
-            
-            showNotification(`Guesser ${guesserName} added successfully!`, 'success');
-        }
-        
-        function removeGuesser(guesserId) {
-            if (confirm(`Are you sure you want to remove guesser ${guesserId}?`)) {
-                let guessers = JSON.parse(localStorage.getItem('matkaGuessers') || '[]');
-                guessers = guessers.filter(g => g.id !== guesserId);
-                localStorage.setItem('matkaGuessers', JSON.stringify(guessers));
-                
-                // Reload table
-                loadGuesserData();
-                
-                showNotification(`Guesser ${guesserId} removed successfully!`, 'info');
-            }
-        }
-        
-        function saveGuesserChanges() {
-            const statusSelects = document.querySelectorAll('.status-select');
-            let guessers = JSON.parse(localStorage.getItem('matkaGuessers') || '[]');
-            
-            statusSelects.forEach(select => {
-                const guesserId = select.dataset.id;
-                const guesserIndex = guessers.findIndex(g => g.id === guesserId);
-                
-                if (guesserIndex !== -1) {
-                    guessers[guesserIndex].status = select.value;
                 }
-            });
-            
-            localStorage.setItem('matkaGuessers', JSON.stringify(guessers));
-            showNotification('Guesser changes saved successfully!', 'success');
+                
+                localStorage.setItem('matkaResults', JSON.stringify(results));
+                
+                // Log activity
+                logActivity('Generated 30 days of historical results');
+                
+                alert('Historical results generated successfully!');
+                loadDashboardStats();
+            }
         }
         
-        function sendTestNotification() {
-            showNotification('Test notification sent to all users!', 'info');
-        }
-        
-        function backupData() {
-            const results = localStorage.getItem('matkaResults');
-            const guessers = localStorage.getItem('matkaGuessers');
-            
-            const data = {
-                results: JSON.parse(results || '{}'),
-                guessers: JSON.parse(guessers || '[]'),
+        function backupAllData() {
+            const backup = {
+                users: JSON.parse(localStorage.getItem('matkaUsers') || '[]'),
+                results: JSON.parse(localStorage.getItem('matkaResults') || '{}'),
+                predictions: JSON.parse(localStorage.getItem('matkaPredictions') || '[]'),
+                guesserNumbers: JSON.parse(localStorage.getItem('guesserNumbers') || '{}'),
+                activity: JSON.parse(localStorage.getItem('adminActivity') || '[]'),
                 backupTime: new Date().toISOString()
             };
             
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
             a.download = `matka-backup-${new Date().getTime()}.json`;
             a.click();
             
-            showNotification('Backup created successfully! File will download automatically.', 'success');
+            localStorage.setItem('lastBackup', new Date().toISOString());
+            logActivity('Created full system backup');
+            
+            alert('Backup created successfully!');
+            loadSystemInfo();
         }
         
-        function showNotification(message, type = 'info') {
-            // Remove existing notifications
-            document.querySelectorAll('.notification').forEach(el => el.remove());
+        function restoreAllData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
             
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.innerHTML = `
-                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-                ${message}
-            `;
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    try {
+                        const backup = JSON.parse(event.target.result);
+                        
+                        if (confirm('Restore this backup? This will overwrite all current data.')) {
+                            localStorage.setItem('matkaUsers', JSON.stringify(backup.users || []));
+                            localStorage.setItem('matkaResults', JSON.stringify(backup.results || {}));
+                            localStorage.setItem('matkaPredictions', JSON.stringify(backup.predictions || []));
+                            localStorage.setItem('guesserNumbers', JSON.stringify(backup.guesserNumbers || {}));
+                            localStorage.setItem('adminActivity', JSON.stringify(backup.activity || []));
+                            
+                            logActivity('Restored system from backup');
+                            alert('Data restored successfully! Page will reload.');
+                            location.reload();
+                        }
+                    } catch (error) {
+                        alert('Invalid backup file!');
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
             
-            document.body.appendChild(notification);
-            
-            // Auto-remove after 5 seconds
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.style.animation = 'slideOut 0.3s ease';
-                    setTimeout(() => notification.remove(), 300);
-                }
-            }, 5000);
+            input.click();
         }
+        
+        function logActivity(action) {
+            const activity = JSON.parse(localStorage.getItem('adminActivity') || '[]');
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            
+            activity.unshift({
+                user: currentUser.username || 'admin',
+                action: action,
+                time: new Date().toISOString()
+            });
+            
+            // Keep only last 100 activities
+            if (activity.length > 100) {
+                activity.length = 100;
+            }
+            
+            localStorage.setItem('adminActivity', JSON.stringify(activity));
+        }
+        
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        }
+        
+        // Initialize activity logging
+        logActivity('Accessed admin dashboard');
     </script>
 </body>
 </html>
