@@ -11,6 +11,55 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
+    <div class="mobile-menu">
+        <div class="mobile-menu-header">
+            <h3><i class="fas fa-bars"></i> Menu</h3>
+            <button class="mobile-menu-close" onclick="toggleMobileMenu()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mobile-menu-content">
+            <a href="index.html" class="mobile-menu-item active">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="results-history.html" class="mobile-menu-item">
+                <i class="fas fa-history"></i> Results
+            </a>
+            <a href="guesser.html" class="mobile-menu-item">
+                <i class="fas fa-users"></i> Guessers
+            </a>
+            <a href="#khaiwal" class="mobile-menu-item" onclick="toggleMobileMenu(); scrollToSection('khaiwal')">
+                <i class="fas fa-gamepad"></i> Khaiwal
+            </a>
+            <a href="#contact" class="mobile-menu-item" onclick="toggleMobileMenu(); scrollToSection('contact')">
+                <i class="fas fa-phone-alt"></i> Contact
+            </a>
+            <a href="user-dashboard.html" class="mobile-menu-item">
+                <i class="fas fa-user"></i> Dashboard
+            </a>
+            <a href="admin.html" class="mobile-menu-item admin-only">
+                <i class="fas fa-lock"></i> Admin Panel
+            </a>
+            <a href="manage-results.html" class="mobile-menu-item admin-only">
+                <i class="fas fa-flag-checkered"></i> Manage Results
+            </a>
+        </div>
+        <div class="mobile-menu-footer">
+            <div class="mobile-ads">
+                <div class="mobile-ad-slot">
+                    <!-- Mobile ad will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Header -->
     <header class="header">
         <div class="container">
@@ -40,11 +89,18 @@
     </nav>
 
     <!-- Advertisement Banner -->
-    <div class="advertisement">
+    <div class="advertisement desktop-only">
         <div class="container">
             <div class="ad-banner" id="ad-banner-top">
                 <!-- Top banner ad will be loaded here -->
             </div>
+        </div>
+    </div>
+
+    <!-- Mobile Ad Top -->
+    <div class="mobile-ad-top mobile-only">
+        <div class="mobile-ad-banner" id="mobile-ad-top">
+            <!-- Mobile top ad will be loaded here -->
         </div>
     </div>
 
@@ -179,6 +235,13 @@
                     </div>
                 </section>
 
+                <!-- Mobile Ad Middle -->
+                <div class="mobile-ad-middle mobile-only">
+                    <div class="mobile-ad-square" id="mobile-ad-middle">
+                        <!-- Mobile middle ad will be loaded here -->
+                    </div>
+                </div>
+
                 <!-- Khaiwal Games Section -->
                 <section id="khaiwal" class="khaiwal-section">
                     <h2><i class="fas fa-gamepad"></i> PLAY WITH KHAIWAL</h2>
@@ -220,7 +283,7 @@
             </div>
 
             <!-- Right Column: Ads & Info -->
-            <div class="right-column">
+            <div class="right-column desktop-only">
                 <!-- Advertisement Sidebar -->
                 <div class="ad-sidebar">
                     <div class="ad-vertical" id="ad-sidebar-1">
@@ -291,7 +354,49 @@
                 </div>
             </div>
         </div>
+
+        <!-- Mobile Bottom Content -->
+        <div class="mobile-bottom-content mobile-only">
+            <!-- Mobile Contact Info -->
+            <div id="mobile-contact" class="mobile-contact-box">
+                <h3><i class="fas fa-headset"></i> CONTACT SUPPORT</h3>
+                <div class="mobile-contact-links" id="mobile-contact-links">
+                    <!-- Mobile contact links will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Mobile Stats -->
+            <div class="mobile-stats-box">
+                <h3><i class="fas fa-chart-bar"></i> TODAY'S STATS</h3>
+                <div class="mobile-stats">
+                    <div class="mobile-stat-item">
+                        <span>Markets: <strong>6</strong></span>
+                        <span>Guessers: <strong>25</strong></span>
+                    </div>
+                    <div class="mobile-stat-item">
+                        <span>Predictions: <strong>156</strong></span>
+                        <span>Accuracy: <strong>89%</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Premium -->
+            <div class="mobile-premium-box">
+                <h3><i class="fas fa-crown"></i> PREMIUM ACCESS</h3>
+                <p>Get premium predictions with 95% accuracy</p>
+                <a href="#contact" class="btn-premium-small">
+                    <i class="fas fa-key"></i> Get Premium
+                </a>
+            </div>
+        </div>
     </main>
+
+    <!-- Mobile Ad Bottom -->
+    <div class="mobile-ad-bottom mobile-only">
+        <div class="mobile-ad-rectangle" id="mobile-ad-bottom">
+            <!-- Mobile bottom ad will be loaded here -->
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -330,6 +435,7 @@
             </div>
             <div class="footer-bottom">
                 <p>&copy; 2024 Matka King. All Rights Reserved.</p>
+                <p class="mobile-info">Optimized for mobile devices</p>
             </div>
         </div>
     </footer>
@@ -344,6 +450,27 @@
         <i class="fas fa-flag-checkered"></i>
     </a>
 
+    <!-- Mobile Quick Actions -->
+    <div class="mobile-quick-actions mobile-only">
+        <a href="index.html" class="mobile-quick-action">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="results-history.html" class="mobile-quick-action">
+            <i class="fas fa-history"></i>
+            <span>Results</span>
+        </a>
+        <a href="guesser.html" class="mobile-quick-action">
+            <i class="fas fa-users"></i>
+            <span>Guessers</span>
+        </a>
+        <a href="user-dashboard.html" class="mobile-quick-action">
+            <i class="fas fa-user"></i>
+            <span>Dashboard</span>
+        </a>
+    </div>
+
     <script src="script.js"></script>
+    <script src="mobile-menu.js"></script>
 </body>
 </html>
