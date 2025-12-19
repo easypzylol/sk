@@ -76,15 +76,7 @@ function loadGameData() {
     if (game) {
         document.getElementById('gameName').value = game.name;
         document.getElementById('gameTime').value = game.time;
-        
-        // Load today's result
-        const today = new Date().toDateString();
-        const todayResult = game.results.find(r => new Date(r.date).toDateString() === today);
-        if (todayResult && todayResult.numbers) {
-            document.getElementById('gameResult').value = todayResult.numbers.join(',');
-        } else {
-            document.getElementById('gameResult').value = '';
-        }
+        document.getElementById('gameYesterday').value = game.yesterday || '';
     }
 }
 
@@ -93,7 +85,7 @@ function updateGame() {
     const gameId = parseInt(document.getElementById('gameSelect').value);
     const gameName = document.getElementById('gameName').value.trim();
     const gameTime = document.getElementById('gameTime').value.trim();
-    const gameResult = document.getElementById('gameResult').value.trim();
+    const gameYesterday = document.getElementById('gameYesterday').value.trim();
     
     if (!gameName || !gameTime) {
         showNotification('Game name and time are required!', 'error');
@@ -112,30 +104,10 @@ function updateGame() {
     games[gameIndex].name = gameName;
     games[gameIndex].time = gameTime;
     
-    // Update today's result if provided
-    if (gameResult) {
-        const numbers = gameResult.split(',').map(num => parseInt(num.trim())).filter(num => !isNaN(num) && num >= 0 && num <= 99);
-        
-        if (numbers.length === 3) {
-            const today = new Date().toISOString();
-            const existingResultIndex = games[gameIndex].results.findIndex(
-                r => new Date(r.date).toDateString() === new Date().toDateString()
-            );
-            
-            if (existingResultIndex !== -1) {
-                games[gameIndex].results[existingResultIndex] = {
-                    date: today,
-                    numbers: numbers
-                };
-            } else {
-                games[gameIndex].results.push({
-                    date: today,
-                    numbers: numbers
-                });
-            }
-        } else {
-            showNotification('Please enter exactly 3 valid numbers (00-99)!', 'error');
-            return;
+    if (gameYesterday) {
+        const yesterdayNumber = parseInt(gameYesterday);
+        if (!isNaN(yesterdayNumber) && yesterdayNumber >= 0 && yesterdayNumber <= 99) {
+            games[gameIndex].yesterday = yesterdayNumber;
         }
     }
     
@@ -404,16 +376,16 @@ function updateAds() {
 function saveHistoricalResult() {
     const date = document.getElementById('resultDate').value;
     const gameId = parseInt(document.getElementById('resultGame').value);
-    const numbers = document.getElementById('resultNumbers').value.trim();
+    const number = document.getElementById('resultNumber').value.trim();
     
-    if (!date || !numbers) {
-        showNotification('Date and numbers are required!', 'error');
+    if (!date || !number) {
+        showNotification('Date and number are required!', 'error');
         return;
     }
     
-    const numberArray = numbers.split(',').map(num => parseInt(num.trim())).filter(num => !isNaN(num) && num >= 0 && num <= 99);
-    if (numberArray.length !== 3) {
-        showNotification('Please enter exactly 3 valid numbers (00-99)!', 'error');
+    const resultNumber = parseInt(number);
+    if (isNaN(resultNumber) || resultNumber < 0 || resultNumber > 99) {
+        showNotification('Please enter a valid number (00-99)!', 'error');
         return;
     }
     
@@ -425,22 +397,12 @@ function saveHistoricalResult() {
         return;
     }
     
-    // Add or update result
-    const existingResultIndex = games[gameIndex].results.findIndex(
-        r => new Date(r.date).toDateString() === new Date(date).toDateString()
-    );
-    
-    if (existingResultIndex !== -1) {
-        games[gameIndex].results[existingResultIndex] = {
-            date: new Date(date).toISOString(),
-            numbers: numberArray
-        };
-    } else {
-        games[gameIndex].results.push({
-            date: new Date(date).toISOString(),
-            numbers: numberArray
-        });
-    }
+    // Add historical result
+    games[gameIndex].results.push({
+        date: new Date(date).toISOString(),
+        number: resultNumber,
+        published: true
+    });
     
     localStorage.setItem('matkaGames', JSON.stringify(games));
     showNotification('Historical result saved!', 'success');
@@ -520,6 +482,7 @@ function loadAdminData() {
 // Helper function for notifications
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
     notification.textContent = message;
     notification.style.cssText = `
         position: fixed;
@@ -546,12 +509,60 @@ function showNotification(message, type = 'info') {
 function initializeStorage() {
     if (!localStorage.getItem('matkaGames')) {
         const games = [
-            { id: 1, name: 'FARIDABAD', time: '17:15', results: [] },
-            { id: 2, name: 'GAZIABAD', time: '21:15', results: [] },
-            { id: 3, name: 'GALI', time: '22:30', results: [] },
-            { id: 4, name: 'DESHWAR', time: '16:45', results: [] },
-            { id: 5, name: 'GALI DUBAI', time: '14:30', results: [] },
-            { id: 6, name: 'DESHWAR DUBAI', time: '23:45', results: [] }
+            { 
+                id: 1, 
+                name: 'FARIDABAD', 
+                time: '17:15', 
+                yesterday: 70, 
+                today: null, 
+                results: [],
+                isPublished: false
+            },
+            { 
+                id: 2, 
+                name: 'GAZIABAD', 
+                time: '21:15', 
+                yesterday: 70, 
+                today: null, 
+                results: [],
+                isPublished: false
+            },
+            { 
+                id: 3, 
+                name: 'GALI', 
+                time: '22:30', 
+                yesterday: 20, 
+                today: null, 
+                results: [],
+                isPublished: false
+            },
+            { 
+                id: 4, 
+                name: 'DESHWAR', 
+                time: '16:45', 
+                yesterday: 25, 
+                today: null, 
+                results: [],
+                isPublished: false
+            },
+            { 
+                id: 5, 
+                name: 'GALI DUBAI', 
+                time: '14:30', 
+                yesterday: 30, 
+                today: null, 
+                results: [],
+                isPublished: false
+            },
+            { 
+                id: 6, 
+                name: 'DESHWAR DUBAI', 
+                time: '23:45', 
+                yesterday: 35, 
+                today: null, 
+                results: [],
+                isPublished: false
+            }
         ];
         localStorage.setItem('matkaGames', JSON.stringify(games));
     }
