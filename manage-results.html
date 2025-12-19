@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Results - Matka King</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Admin Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-header">
+            <h2><i class="fas fa-lock"></i> Admin Login</h2>
+            <p>Enter admin credentials to manage results</p>
+        </div>
+        <form id="adminLoginForm">
+            <div class="form-group">
+                <label for="adminUsername">Username</label>
+                <input type="text" id="adminUsername" class="form-control" placeholder="Enter username" required>
+            </div>
+            <div class="form-group">
+                <label for="adminPassword">Password</label>
+                <input type="password" id="adminPassword" class="form-control" placeholder="Enter password" required>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </div>
+        </form>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="index.html" style="color: #ff4081; text-decoration: none;">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+    </div>
+
+    <!-- Results Management Dashboard (Hidden by default) -->
+    <div id="resultsDashboard" style="display: none;">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="logo">
+                    <h1>MANAGE RESULTS - ADMIN</h1>
+                    <p>Set & Publish Results for 6 Games</p>
+                </div>
+                <div class="header-buttons">
+                    <a href="admin.html" class="btn btn-outline">
+                        <i class="fas fa-cogs"></i> Main Admin
+                    </a>
+                    <button onclick="logout()" class="btn btn-danger">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container admin-panel">
+            <div class="admin-header">
+                <h1><i class="fas fa-flag-checkered"></i> Manage Results</h1>
+                <p>Set today's results and publish for users to see</p>
+            </div>
+
+            <!-- Today's Results Form -->
+            <div class="admin-card">
+                <h3><i class="fas fa-calendar-day"></i> Set Today's Results</h3>
+                <p class="today-date" style="text-align: center; margin-bottom: 20px; color: #ff4081; font-size: 1.2rem;">
+                    <i class="fas fa-calendar-alt"></i> Date: <span id="currentDate"></span>
+                </p>
+                
+                <div class="results-form-grid">
+                    <!-- Faridabad -->
+                    <div class="result-set-card">
+                        <h4>FARIDABAD (5:15 PM)</h4>
+                        <div class="form-group">
+                            <label>Yesterday's Result</label>
+                            <input type="number" id="yesterday-1" class="form-control" min="0" max="99" placeholder="00-99" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Today's Result</label>
+                            <input type="number" id="today-1" class="form-control" min="0" max="99" placeholder="Enter 00-99">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div id="status-1" class="status-badge unpublished">Not Published</div>
+                        </div>
+                        <button onclick="publishResult(1)" class="btn btn-success btn-block">
+                            <i class="fas fa-paper-plane"></i> Publish Result
+                        </button>
+                    </div>
+
+                    <!-- Gaziabad -->
+                    <div class="result-set-card">
+                        <h4>GAZIABAD (9:15 PM)</h4>
+                        <div class="form-group">
+                            <label>Yesterday's Result</label>
+                            <input type="number" id="yesterday-2" class="form-control" min="0" max="99" placeholder="00-99" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Today's Result</label>
+                            <input type="number" id="today-2" class="form-control" min="0" max="99" placeholder="Enter 00-99">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div id="status-2" class="status-badge unpublished">Not Published</div>
+                        </div>
+                        <button onclick="publishResult(2)" class="btn btn-success btn-block">
+                            <i class="fas fa-paper-plane"></i> Publish Result
+                        </button>
+                    </div>
+
+                    <!-- Gali -->
+                    <div class="result-set-card">
+                        <h4>GALI (10:30 PM)</h4>
+                        <div class="form-group">
+                            <label>Yesterday's Result</label>
+                            <input type="number" id="yesterday-3" class="form-control" min="0" max="99" placeholder="00-99" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Today's Result</label>
+                            <input type="number" id="today-3" class="form-control" min="0" max="99" placeholder="Enter 00-99">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div id="status-3" class="status-badge unpublished">Not Published</div>
+                        </div>
+                        <button onclick="publishResult(3)" class="btn btn-success btn-block">
+                            <i class="fas fa-paper-plane"></i> Publish Result
+                        </button>
+                    </div>
+
+                    <!-- Deshwar -->
+                    <div class="result-set-card">
+                        <h4>DESHWAR (4:45 PM)</h4>
+                        <div class="form-group">
+                            <label>Yesterday's Result</label>
+                            <input type="number" id="yesterday-4" class="form-control" min="0" max="99" placeholder="00-99" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Today's Result</label>
+                            <input type="number" id="today-4" class="form-control" min="0" max="99" placeholder="Enter 00-99">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div id="status-4" class="status-badge unpublished">Not Published</div>
+                        </div>
+                        <button onclick="publishResult(4)" class="btn btn-success btn-block">
+                            <i class="fas fa-paper-plane"></i> Publish Result
+                        </button>
+                    </div>
+
+                    <!-- Gali Dubai -->
+                    <div class="result-set-card">
+                        <h4>GALI DUBAI (2:30 PM)</h4>
+                        <div class="form-group">
+                            <label>Yesterday's Result</label>
+                            <input type="number" id="yesterday-5" class="form-control" min="0" max="99" placeholder="00-99" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Today's Result</label>
+                            <input type="number" id="today-5" class="form-control" min="0" max="99" placeholder="Enter 00-99">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div id="status-5" class="status-badge unpublished">Not Published</div>
+                        </div>
+                        <button onclick="publishResult(5)" class="btn btn-success btn-block">
+                            <i class="fas fa-paper-plane"></i> Publish Result
+                        </button>
+                    </div>
+
+                    <!-- Deshwar Dubai -->
+                    <div class="result-set-card">
+                        <h4>DESHWAR DUBAI (11:45 PM)</h4>
+                        <div class="form-group">
+                            <label>Yesterday's Result</label>
+                            <input type="number" id="yesterday-6" class="form-control" min="0" max="99" placeholder="00-99" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Today's Result</label>
+                            <input type="number" id="today-6" class="form-control" min="0" max="99" placeholder="Enter 00-99">
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <div id="status-6" class="status-badge unpublished">Not Published</div>
+                        </div>
+                        <button onclick="publishResult(6)" class="btn btn-success btn-block">
+                            <i class="fas fa-paper-plane"></i> Publish Result
+                        </button>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; text-align: center;">
+                    <button onclick="publishAllResults()" class="btn btn-premium" style="padding: 15px 30px;">
+                        <i class="fas fa-broadcast-tower"></i> PUBLISH ALL RESULTS
+                    </button>
+                    <p style="color: #a0a0c0; margin-top: 10px; font-size: 0.9rem;">
+                        This will publish results for all 6 games that have today's result entered
+                    </p>
+                </div>
+            </div>
+
+            <!-- Results History -->
+            <div class="admin-card" style="margin-top: 30px;">
+                <h3><i class="fas fa-history"></i> Today's Results Overview</h3>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Game</th>
+                                <th>Time</th>
+                                <th>Yesterday</th>
+                                <th>Today</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsOverview">
+                            <!-- Will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="admin-card" style="margin-top: 30px;">
+                <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                    <button onclick="copyYesterdayToToday()" class="btn btn-outline">
+                        <i class="fas fa-copy"></i> Copy Yesterday to Today
+                    </button>
+                    <button onclick="clearAllTodayResults()" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Clear All Today Results
+                    </button>
+                    <button onclick="unpublishAllResults()" class="btn btn-warning">
+                        <i class="fas fa-undo"></i> Unpublish All
+                    </button>
+                    <button onclick="exportTodayResults()" class="btn btn-success">
+                        <i class="fas fa-download"></i> Export Results
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-bottom">
+                    <p>Results Management - Matka King &copy; 2024 | Admin Access Only</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Results Management JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if admin is logged in
+            const adminLoggedIn = localStorage.getItem('adminLoggedIn');
+            
+            if (adminLoggedIn === 'true') {
+                showResultsDashboard();
+            } else {
+                document.getElementById('loginScreen').style.display = 'block';
+            }
+            
+            // Set up login form
+            const loginForm = document.getElementById('adminLoginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const username = document.getElementById('adminUsername').value;
+                    const password = document.getElementById('adminPassword').value;
+                    
+                    if (authenticateAdmin(username, password)) {
+                        localStorage.setItem('adminLoggedIn', 'true');
+                        showResultsDashboard();
+                        showNotification('Login successful!', 'success');
+                    } else {
+                        showNotification('Invalid credentials!', 'error');
+                    }
+                });
+            }
+            
+            // Set current date
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('currentDate').textContent = today.toLocaleDateString('en-US', options);
+        });
+
+        // Authentication
+        function authenticateAdmin(username, password) {
+            // Default admin credentials
+            if (username === 'admin' && password === 'admin123') {
+                return true;
+            }
+            
+            // Check stored credentials
+            const credentials = JSON.parse(localStorage.getItem('adminCredentials'));
+            if (credentials) {
+                return credentials.username === username && credentials.password === password;
+            }
+            
+            return false;
+        }
+
+        // Show results dashboard
+        function showResultsDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('resultsDashboard').style.display = 'block';
+            
+            loadGamesData();
+            updateResultsOverview();
+        }
+
+        // Load games data
+        function loadGamesData() {
+            const games = JSON.parse(localStorage.getItem('matkaGames')) || [];
+            
+            games.forEach(game => {
+                // Set yesterday value
+                const yesterdayInput = document.getElementById(`yesterday-${game.id}`);
+                if (yesterdayInput && game.yesterday !== null) {
+                    yesterdayInput.value = game.yesterday;
+                }
+                
+                // Set today value
+                const todayInput = document.getElementById(`today-${game.id}`);
+                if (todayInput) {
+                    todayInput.value = game.today || '';
+                }
+                
+                // Update status
+                const statusElement = document.getElementById(`status-${game.id}`);
+                if (statusElement) {
+                    if (game.isPublished && game.today !== null) {
+                        statusElement.textContent = 'Published ✓';
+                        statusElement.className = 'status-badge published';
+                    } else if (game.today !== null) {
+                        statusElement.textContent = 'Ready to Publish';
+                        statusElement.className = 'status-badge ready';
+                    } else {
+                        statusElement.textContent = 'Not Published';
+                        statusElement.className = 'status-badge unpublished';
+                    }
+                }
+            });
+        }
+
+        // Publish result for a specific game
+        function publishResult(gameId) {
+            const todayInput = document.getElementById(`today-${gameId}`);
+            const todayValue = todayInput ? parseInt(todayInput.value) : null;
+            
+            if (isNaN(todayValue) || todayValue < 0 || todayValue > 99) {
+                showNotification('Please enter a valid number (00-99)!', 'error');
+                return;
+            }
+            
+            let games = JSON.parse(localStorage.getItem('matkaGames')) || [];
+            const gameIndex = games.findIndex(g => g.id === gameId);
+            
+            if (gameIndex !== -1) {
+                // Update yesterday with previous today if exists
+                if (games[gameIndex].today !== null && !games[gameIndex].isPublished) {
+                    games[gameIndex].yesterday = games[gameIndex].today;
+                }
+                
+                // Set new today result
+                games[gameIndex].today = todayValue;
+                games[gameIndex].isPublished = true;
+                
+                // Add to results array
+                const today = new Date().toISOString();
+                games[gameIndex].results.push({
+                    date: today,
+                    number: todayValue,
+                    published: true
+                });
+                
+                localStorage.setItem('matkaGames', JSON.stringify(games));
+                
+                // Update display
+                loadGamesData();
+                updateResultsOverview();
+                
+                showNotification(`${games[gameIndex].name} result published: ${todayValue.toString().padStart(2, '0')}!`, 'success');
+            }
+        }
+
+        // Publish all results
+        function publishAllResults() {
+            let games = JSON.parse(localStorage.getItem('matkaGames')) || [];
+            let publishedCount = 0;
+            
+            games.forEach((game, index) => {
+                const todayInput = document.getElementById(`today-${game.id}`);
+                const todayValue = todayInput ? parseInt(todayInput.value) : null;
+                
+                if (!isNaN(todayValue) && todayValue >= 0 && todayValue <= 99) {
+                    // Update yesterday
+                    if (games[index].today !== null && !games[index].isPublished) {
+                        games[index].yesterday = games[index].today;
+                    }
+                    
+                    // Set today
+                    games[index].today = todayValue;
+                    games[index].isPublished = true;
+                    
+                    // Add to results
+                    const today = new Date().toISOString();
+                    games[index].results.push({
+                        date: today,
+                        number: todayValue,
+                        published: true
+                    });
+                    
+                    publishedCount++;
+                }
+            });
+            
+            if (publishedCount > 0) {
+                localStorage.setItem('matkaGames', JSON.stringify(games));
+                loadGamesData();
+                updateResultsOverview();
+                showNotification(`${publishedCount} game results published successfully!`, 'success');
+            } else {
+                showNotification('No valid results to publish!', 'error');
+            }
+        }
+
+        // Update results overview table
+        function updateResultsOverview() {
+            const games = JSON.parse(localStorage.getItem('matkaGames')) || [];
+            const tbody = document.getElementById('resultsOverview');
+            
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+            
+            games.forEach(game => {
+                const row = document.createElement('tr');
+                
+                let statusBadge = '';
+                if (game.isPublished && game.today !== null) {
+                    statusBadge = '<span class="status-badge published" style="display: inline-block;">Published</span>';
+                } else if (game.today !== null) {
+                    statusBadge = '<span class="status-badge ready" style="display: inline-block;">Ready</span>';
+                } else {
+                    statusBadge = '<span class="status-badge unpublished" style="display: inline-block;">Pending</span>';
+                }
+                
+                row.innerHTML = `
+                    <td><strong>${game.name}</strong></td>
+                    <td>${formatTime(game.time)}</td>
+                    <td>${game.yesterday !== null ? game.yesterday.toString().padStart(2, '0') : '--'}</td>
+                    <td>${game.today !== null ? game.today.toString().padStart(2, '0') : '--'}</td>
+                    <td>${statusBadge}</td>
+                    <td>
+                        <button onclick="editResult(${game.id})" class="btn btn-small">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        ${game.isPublished ? 
+                            `<button onclick="unpublishResult(${game.id})" class="btn btn-small btn-warning">
+                                <i class="fas fa-times"></i> Unpublish
+                            </button>` : ''
+                        }
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // Edit result
+        function editResult(gameId) {
+            const todayInput = document.getElementById(`today-${gameId}`);
+            if (todayInput) {
+                todayInput.focus();
+                showNotification(`Editing ${getGameName(gameId)} result`, 'info');
+            }
+        }
+
+        // Unpublish result
+        function unpublishResult(gameId) {
+            if (!confirm('Unpublish this result? Users will no longer see it.')) return;
+            
+            let games = JSON.parse(localStorage.getItem('matkaGames')) || [];
+            const gameIndex = games.findIndex(g => g.id === gameId);
+            
+            if (gameIndex !== -1) {
+                games[gameIndex].isPublished = false;
+                localStorage.setItem('matkaGames', JSON.stringify(games));
+                
+                loadGamesData();
+                updateResultsOverview();
+                showNotification('Result unpublished successfully', 'success');
+            }
+        }
+
+        // Copy yesterday to today
+        function copyYesterdayToToday() {
+            let games = JSON.parse(localStorage.getItem('matkaGames')) || [];
+            let copiedCount = 0;
+            
+            games.forEach((game, index) => {
+                if (game.yesterday !== null) {
+                    games[index].today = game.yesterday;
+                    
+                    // Update input field
+                    const todayInput = document.getElementById(`today-${game.id}`);
+                    if (todayInput) {
+                        todayInput.value = game.yesterday;
+                    }
+                    
+                    copiedCount++;
+                }
+            });
+            
+            if (copiedCount > 0) {
+                localStorage.setItem('matkaGames', JSON.stringify(games));
+                showNotification(`${copiedCount} yesterday results copied to today`, 'success');
+            } else {
+                showNotification('No yesterday results to copy', 'info');
+            }
+        }
+
+        // Clear all today results
+        function clearAllTodayResults() {
+            if (!confirm('Clear all today results? This will remove unpublished results.')) return;
+            
+            let games = JSON.parse(localStorage.getItem('matkaGames')) || [];
+            let clearedCount = 0;
+            
+            games.forEach((game, index) => {
+                if (!game.isPublished) {
+                    games[index].today = null;
+                    
+                    // Clear input field
+                    const todayInput = document.getElementById(`today-${game.id}`);
+                    if (todayInput) {
+                        todayInput.value = '';
+                    }
+                    
+                    clearedCount++;
+                }
+            });
+            
+            localStorage.setItem('matkaGames', JSON.stringify(games));
+            loadGamesData();
+            updateResultsOverview();
+            
+            showNotification(`${clearedCount} today results cleared`, 'success');
+        }
+
+        // Unpublish all results
+        function unpublishAllResults() {
+            if (!confirm('Unpublish ALL results? Users will see no results.')) return;
+            
+            let games = JSON.parse(localStorage.getItem('matkaGames')) || [];
+            
+            games.forEach((game, index) => {
+                games[index].isPublished = false;
+            });
+            
+            localStorage.setItem('matkaGames', JSON.stringify(games));
+            loadGamesData();
+            updateResultsOverview();
+            
+            showNotification('All results unpublished', 'success');
+        }
+
+        // Export today results
+        function exportTodayResults() {
+            const games = JSON.parse(localStorage.getItem('matkaGames')) || [];
+            const today = new Date().toLocaleDateString();
+            
+            let csvContent = "Game,Time,Yesterday,Today,Status\n";
+            
+            games.forEach(game => {
+                const status = game.isPublished ? 'Published' : (game.today !== null ? 'Ready' : 'Pending');
+                csvContent += `${game.name},${formatTime(game.time)},${game.yesterday || '--'},${game.today || '--'},${status}\n`;
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `matka-results-${today.replace(/\//g, '-')}.csv`;
+            a.click();
+            
+            showNotification('Results exported successfully', 'success');
+        }
+
+        // Helper functions
+        function formatTime(timeStr) {
+            if (!timeStr) return '';
+            const [hours, minutes] = timeStr.split(':');
+            const hour = parseInt(hours);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const hour12 = hour % 12 || 12;
+            return `${hour12}:${minutes.padStart(2, '0')} ${ampm}`;
+        }
+
+        function getGameName(gameId) {
+            const games = JSON.parse(localStorage.getItem('matkaGames')) || [];
+            const game = games.find(g => g.id === gameId);
+            return game ? game.name : `Game ${gameId}`;
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#00c853' : type === 'error' ? '#ff1744' : '#2196f3'};
+                color: white;
+                padding: 15px 25px;
+                border-radius: 5px;
+                z-index: 1000;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                animation: slideIn 0.3s ease;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        function logout() {
+            localStorage.removeItem('adminLoggedIn');
+            location.reload();
+        }
+    </script>
+</body>
+</html>
